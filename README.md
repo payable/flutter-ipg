@@ -2,7 +2,7 @@
 
 ![](https://i.imgur.com/ERpCDa7.png)
 
-Flutter SDK - [ipg.flutter.payable.lk/](https://ipg.flutter.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
+Flutter SDK - [ipg.flutter.payable.lk](https://ipg.flutter.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
 
 [![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg)
 [![Build Status](https://travis-ci.com/payable/flutter-ipg.svg?branch=master)](https://travis-ci.com/payable/flutter-ipg)
