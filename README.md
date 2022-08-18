@@ -78,7 +78,7 @@ PAYableIPG(
 )
 ```
 
-> All the shipping details and notification URL are optional.
+> Shipping details and notification URL are optional.
 
 <hr/>
 
