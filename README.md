@@ -24,7 +24,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^1.0.4
+payable_ipg: ^1.0.5
 ```
 
 <hr>
@@ -82,7 +82,7 @@ PAYableIPG(
 
 <hr/>
 
-## Example Usage
+### Example Usage
 
 ```dart
 import 'package:flutter/material.dart';
@@ -144,7 +144,33 @@ void main() {
 }
 ```
 
-## Demo
+### Advanced Usage
+
+<b>1.</b> Pay with session `uid` without `merchantKey` and `merchantToken`.
+
+```dart
+PAYableIPGSession(
+    uid: "969077C7-EBB5-428A-9F09-FF195560F200",
+    onPaymentCompleted: (data) {
+      print("onPaymentCompleted: $data");
+    },
+    onPaymentCancelled: () {
+      print("onPaymentCancelled");
+    },
+    onPaymentError: (data) {
+      print("onPaymentError: $data");
+    },
+    environment: IPGEnvironment.sandbox,
+)
+```
+
+<b>2.</b> Check the status of the transaction using `uid` and `resultIndicator`.
+
+```dart
+var data = await ipgClient.getStatus("uid", "resultIndicator");
+```
+
+### Demo
 
 ![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
 

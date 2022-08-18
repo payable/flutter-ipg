@@ -90,6 +90,8 @@ class PAYableIPG extends StatefulWidget {
   OnPaymentCancelled onPaymentCancelled;
   OnPaymentCompleted onPaymentCompleted;
 
+  String? uid;
+
   PAYableIPG({
     Key? key,
     required this.ipgClient,
@@ -122,6 +124,7 @@ class PAYableIPG extends StatefulWidget {
     required this.onPaymentError,
     required this.onPaymentCancelled,
     required this.onPaymentCompleted,
+    this.uid,
   }) : super(key: key);
 
   @override
@@ -149,150 +152,156 @@ class _PAYableIPGState extends State<PAYableIPG> {
               'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/?',
             );
 
-            queryList.add(
-              'merchantKey=${widget.ipgClient.merchantKey}',
-            );
-
-            queryList.add(
-              '&merchantToken=${widget.ipgClient.merchantToken}',
-            );
-
-            queryList.add(
-              '&integrationType=MSDK',
-            );
-
-            queryList.add(
-              '&integrationVersion=1.0.1',
-            );
-
-            queryList.add(
-              '&refererUrl=${widget.ipgClient.refererUrl}',
-            );
-
-            queryList.add(
-              '&logoUrl=${widget.ipgClient.logoUrl}',
-            );
-
-            queryList.add(
-              '&notificationUrl=${widget.notificationUrl}',
-            );
-
-            queryList.add(
-              '&returnUrl=https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/status-view',
-            );
-
-            queryList.add(
-              '&buttonType=${widget.buttonType}',
-            );
-
-            queryList.add(
-              '&statusViewDuration=${widget.statusViewDuration}',
-            );
-
-            queryList.add(
-              '&amount=${widget.amount}',
-            );
-
-            queryList.add(
-              '&currencyCode=${widget.currencyCode}',
-            );
-
-            queryList.add(
-              '&orderDescription=${widget.orderDescription}',
-            );
-
-            queryList.add(
-              '&customerFirstName=${widget.customerFirstName}',
-            );
-
-            queryList.add(
-              '&customerLastName=${widget.customerLastName}',
-            );
-
-            queryList.add(
-              '&customerEmail=${widget.customerEmail}',
-            );
-
-            queryList.add(
-              '&customerMobilePhone=${widget.customerMobilePhone}',
-            );
-
-            queryList.add(
-              '&billingAddressStreet=${widget.billingAddressStreet}',
-            );
-
-            queryList.add(
-              '&billingAddressCity=${widget.billingAddressCity}',
-            );
-
-            queryList.add(
-              '&billingAddressCountry=${widget.billingAddressCountry}',
-            );
-
-            queryList.add(
-              '&billingAddressPostcodeZip=${widget.billingAddressPostcodeZip}',
-            );
-
-            if (widget.billingAddressStateProvince != null) {
+            if (widget.uid != null) {
               queryList.add(
-                '&billingAddressStateProvince=${widget.billingAddressStateProvince}',
+                'uid=${widget.uid}',
               );
-            }
-
-            if (widget.shippingContactFirstName != null) {
+            } else {
               queryList.add(
-                '&shippingContactFirstName=${widget.shippingContactFirstName}',
+                'merchantKey=${widget.ipgClient.merchantKey}',
               );
-            }
-            if (widget.shippingContactLastName != null) {
-              queryList.add(
-                '&shippingContactLastName=${widget.shippingContactLastName}',
-              );
-            }
 
-            if (widget.shippingContactEmail != null) {
               queryList.add(
-                '&shippingContactEmail=${widget.shippingContactEmail}',
+                '&merchantToken=${widget.ipgClient.merchantToken}',
               );
-            }
 
-            if (widget.shippingContactMobilePhone != null) {
               queryList.add(
-                '&shippingContactMobilePhone=${widget.shippingContactMobilePhone}',
+                '&integrationType=MSDK',
               );
-            }
 
-            if (widget.shippingAddressStreet != null) {
               queryList.add(
-                '&shippingAddressStreet=${widget.shippingAddressStreet}',
+                '&integrationVersion=1.0.1',
               );
-            }
 
-            if (widget.shippingAddressCity != null) {
               queryList.add(
-                '&shippingAddressCity=${widget.shippingAddressCity}',
+                '&refererUrl=${widget.ipgClient.refererUrl}',
               );
-            }
 
-            if (widget.shippingAddressCountry != null) {
               queryList.add(
-                '&shippingAddressCountry=${widget.shippingAddressCountry}',
+                '&logoUrl=${widget.ipgClient.logoUrl}',
               );
-            }
 
-            if (widget.shippingAddressPostcodeZip != null) {
               queryList.add(
-                '&shippingAddressPostcodeZip=${widget.shippingAddressPostcodeZip}',
+                '&notificationUrl=${widget.notificationUrl}',
               );
-            }
 
-            if (widget.shippingAddressStateProvince != null) {
               queryList.add(
-                '&shippingAddressStateProvince=${widget.shippingAddressStateProvince}',
+                '&returnUrl=https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/status-view',
               );
-            }
 
-            queryList.add('&responseType=html');
+              queryList.add(
+                '&buttonType=${widget.buttonType}',
+              );
+
+              queryList.add(
+                '&statusViewDuration=${widget.statusViewDuration}',
+              );
+
+              queryList.add(
+                '&amount=${widget.amount}',
+              );
+
+              queryList.add(
+                '&currencyCode=${widget.currencyCode}',
+              );
+
+              queryList.add(
+                '&orderDescription=${widget.orderDescription}',
+              );
+
+              queryList.add(
+                '&customerFirstName=${widget.customerFirstName}',
+              );
+
+              queryList.add(
+                '&customerLastName=${widget.customerLastName}',
+              );
+
+              queryList.add(
+                '&customerEmail=${widget.customerEmail}',
+              );
+
+              queryList.add(
+                '&customerMobilePhone=${widget.customerMobilePhone}',
+              );
+
+              queryList.add(
+                '&billingAddressStreet=${widget.billingAddressStreet}',
+              );
+
+              queryList.add(
+                '&billingAddressCity=${widget.billingAddressCity}',
+              );
+
+              queryList.add(
+                '&billingAddressCountry=${widget.billingAddressCountry}',
+              );
+
+              queryList.add(
+                '&billingAddressPostcodeZip=${widget.billingAddressPostcodeZip}',
+              );
+
+              if (widget.billingAddressStateProvince != null) {
+                queryList.add(
+                  '&billingAddressStateProvince=${widget.billingAddressStateProvince}',
+                );
+              }
+
+              if (widget.shippingContactFirstName != null) {
+                queryList.add(
+                  '&shippingContactFirstName=${widget.shippingContactFirstName}',
+                );
+              }
+              if (widget.shippingContactLastName != null) {
+                queryList.add(
+                  '&shippingContactLastName=${widget.shippingContactLastName}',
+                );
+              }
+
+              if (widget.shippingContactEmail != null) {
+                queryList.add(
+                  '&shippingContactEmail=${widget.shippingContactEmail}',
+                );
+              }
+
+              if (widget.shippingContactMobilePhone != null) {
+                queryList.add(
+                  '&shippingContactMobilePhone=${widget.shippingContactMobilePhone}',
+                );
+              }
+
+              if (widget.shippingAddressStreet != null) {
+                queryList.add(
+                  '&shippingAddressStreet=${widget.shippingAddressStreet}',
+                );
+              }
+
+              if (widget.shippingAddressCity != null) {
+                queryList.add(
+                  '&shippingAddressCity=${widget.shippingAddressCity}',
+                );
+              }
+
+              if (widget.shippingAddressCountry != null) {
+                queryList.add(
+                  '&shippingAddressCountry=${widget.shippingAddressCountry}',
+                );
+              }
+
+              if (widget.shippingAddressPostcodeZip != null) {
+                queryList.add(
+                  '&shippingAddressPostcodeZip=${widget.shippingAddressPostcodeZip}',
+                );
+              }
+
+              if (widget.shippingAddressStateProvince != null) {
+                queryList.add(
+                  '&shippingAddressStateProvince=${widget.shippingAddressStateProvince}',
+                );
+              }
+
+              queryList.add('&responseType=html');
+            }
 
             _webViewController.loadUrl(queryList.join());
           },
@@ -403,5 +412,57 @@ class _PAYableIPGState extends State<PAYableIPG> {
     if (kDebugMode) {
       print("PAYABLE-IPG-FLUTTER $message");
     }
+  }
+}
+
+class PAYableIPGSession extends StatelessWidget {
+  String uid;
+  OnPaymentPageLoaded? onPaymentPageLoaded;
+  OnPaymentStarted? onPaymentStarted;
+  OnPaymentError onPaymentError;
+  OnPaymentCancelled onPaymentCancelled;
+  OnPaymentCompleted onPaymentCompleted;
+  IPGEnvironment environment;
+
+  PAYableIPGSession({
+    Key? key,
+    required this.uid,
+    this.onPaymentPageLoaded,
+    this.onPaymentStarted,
+    required this.onPaymentError,
+    required this.onPaymentCancelled,
+    required this.onPaymentCompleted,
+    this.environment = IPGEnvironment.production,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PAYableIPG(
+      ipgClient: PAYableIPGClient(
+        merchantKey: "-",
+        merchantToken: "-",
+        refererUrl: "-",
+        logoUrl: "-",
+        environment: environment,
+      ),
+      uid: uid,
+      amount: 0,
+      currencyCode: "-",
+      orderDescription: "-",
+      customerFirstName: "-",
+      customerLastName: "-",
+      customerEmail: "-",
+      customerMobilePhone: "-",
+      billingAddressStreet: "-",
+      billingAddressCity: "-",
+      billingAddressCountry: "-",
+      billingAddressPostcodeZip: "-",
+      billingAddressStateProvince: "-",
+      onPaymentPageLoaded: onPaymentPageLoaded,
+      onPaymentStarted: onPaymentStarted,
+      onPaymentCompleted: onPaymentCompleted,
+      onPaymentCancelled: onPaymentCancelled,
+      onPaymentError: onPaymentError,
+    );
   }
 }

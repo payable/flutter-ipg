@@ -1,3 +1,7 @@
+## 1.0.5
+
+* status added
+
 ## 1.0.4
 
 * Added
