@@ -1,3 +1,7 @@
+## 1.0.2
+
+* CI Added
+
 ## 1.0.1
 
 * PAYable IPG Release
