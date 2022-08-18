@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   payable_ipg:
     path: ../
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

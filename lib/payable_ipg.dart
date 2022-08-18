@@ -3,8 +3,43 @@ import 'dart:core';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
 
-enum IPGEnvironment { production, sandbox }
+enum IPGEnvironment {
+  production,
+  sandbox,
+}
+
+class PAYableIPGClient {
+  String merchantKey;
+  String merchantToken;
+  String refererUrl;
+  String logoUrl;
+  IPGEnvironment environment;
+
+  PAYableIPGClient({
+    required this.merchantKey,
+    required this.merchantToken,
+    required this.refererUrl,
+    required this.logoUrl,
+    this.environment = IPGEnvironment.production,
+  });
+
+  Future<String> getStatus(String uid, String resultIndicator) async {
+    var url = Uri.parse('https://us-central1-payable-mobile.cloudfunctions.net/ipg/${environment.name}/status-view').replace(queryParameters: {
+      'uid': uid,
+      'resultIndicator': resultIndicator,
+      'responseType': 'json',
+    });
+
+    try {
+      var response = await http.get(url);
+      return response.body;
+    } catch (ex) {
+      return ex.toString();
+    }
+  }
+}
 
 typedef OnPaymentPageLoaded = void Function();
 
@@ -17,11 +52,7 @@ typedef OnPaymentCancelled = void Function();
 typedef OnPaymentCompleted = void Function(String data);
 
 class PAYableIPG extends StatefulWidget {
-  //
-  String merchantKey;
-  String merchantToken;
-  String refererUrl;
-  String logoUrl;
+  PAYableIPGClient ipgClient;
 
   num amount;
   String currencyCode;
@@ -52,9 +83,6 @@ class PAYableIPG extends StatefulWidget {
   int buttonType;
   int statusViewDuration;
 
-  IPGEnvironment environment;
-  bool debug;
-
   OnPaymentPageLoaded? onPaymentPageLoaded;
   OnPaymentStarted? onPaymentStarted;
 
@@ -64,10 +92,7 @@ class PAYableIPG extends StatefulWidget {
 
   PAYableIPG({
     Key? key,
-    required this.merchantKey,
-    required this.merchantToken,
-    required this.refererUrl,
-    required this.logoUrl,
+    required this.ipgClient,
     required this.amount,
     required this.currencyCode,
     required this.orderDescription,
@@ -92,8 +117,6 @@ class PAYableIPG extends StatefulWidget {
     this.notificationUrl,
     this.buttonType = 2,
     this.statusViewDuration = 5,
-    this.environment = IPGEnvironment.production,
-    this.debug = false,
     this.onPaymentPageLoaded,
     this.onPaymentStarted,
     required this.onPaymentError,
@@ -107,206 +130,213 @@ class PAYableIPG extends StatefulWidget {
 
 class _PAYableIPGState extends State<PAYableIPG> {
   var _isLoading = false;
+  String? _errorMessage;
   late WebViewController _webViewController;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('PAYable Payment'),
-        ),
-        body: Stack(
-          children: [
-            WebView(
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (controller) {
-                //controller.complete(webViewController);
-                _webViewController = controller;
+    return Stack(
+      children: [
+        WebView(
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (controller) {
+            // controller.complete(webViewController);
+            _webViewController = controller;
 
-                List<String> queryList = [];
+            List<String> queryList = [];
 
-                queryList.add(
-                  'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.environment.name}/?',
-                );
+            queryList.add(
+              'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/?',
+            );
 
-                queryList.add(
-                  'merchantKey=${widget.merchantKey}',
-                );
+            queryList.add(
+              'merchantKey=${widget.ipgClient.merchantKey}',
+            );
 
-                queryList.add(
-                  '&merchantToken=${widget.merchantToken}',
-                );
+            queryList.add(
+              '&merchantToken=${widget.ipgClient.merchantToken}',
+            );
 
-                queryList.add(
-                  '&integrationType=MSDK',
-                );
+            queryList.add(
+              '&integrationType=MSDK',
+            );
 
-                queryList.add(
-                  '&integrationVersion=1.0.1',
-                );
+            queryList.add(
+              '&integrationVersion=1.0.1',
+            );
 
-                queryList.add(
-                  '&refererUrl=${widget.refererUrl}',
-                );
+            queryList.add(
+              '&refererUrl=${widget.ipgClient.refererUrl}',
+            );
 
-                queryList.add(
-                  '&logoUrl=${widget.logoUrl}',
-                );
+            queryList.add(
+              '&logoUrl=${widget.ipgClient.logoUrl}',
+            );
 
-                queryList.add(
-                  '&notificationUrl=${widget.notificationUrl}',
-                );
+            queryList.add(
+              '&notificationUrl=${widget.notificationUrl}',
+            );
 
-                queryList.add(
-                  '&returnUrl=https://us-central1-payable-mobile.cloudfunctions.net/ipg/status-view',
-                );
+            queryList.add(
+              '&returnUrl=https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/status-view',
+            );
 
-                queryList.add(
-                  '&buttonType=${widget.buttonType}',
-                );
+            queryList.add(
+              '&buttonType=${widget.buttonType}',
+            );
 
-                queryList.add(
-                  '&statusViewDuration=${widget.statusViewDuration}',
-                );
+            queryList.add(
+              '&statusViewDuration=${widget.statusViewDuration}',
+            );
 
-                queryList.add(
-                  '&amount=${widget.amount}',
-                );
+            queryList.add(
+              '&amount=${widget.amount}',
+            );
 
-                queryList.add(
-                  '&currencyCode=${widget.currencyCode}',
-                );
+            queryList.add(
+              '&currencyCode=${widget.currencyCode}',
+            );
 
-                queryList.add(
-                  '&orderDescription=${widget.orderDescription}',
-                );
+            queryList.add(
+              '&orderDescription=${widget.orderDescription}',
+            );
 
-                queryList.add(
-                  '&customerFirstName=${widget.customerFirstName}',
-                );
+            queryList.add(
+              '&customerFirstName=${widget.customerFirstName}',
+            );
 
-                queryList.add(
-                  '&customerLastName=${widget.customerLastName}',
-                );
+            queryList.add(
+              '&customerLastName=${widget.customerLastName}',
+            );
 
-                queryList.add(
-                  '&customerEmail=${widget.customerEmail}',
-                );
+            queryList.add(
+              '&customerEmail=${widget.customerEmail}',
+            );
 
-                queryList.add(
-                  '&customerMobilePhone=${widget.customerMobilePhone}',
-                );
+            queryList.add(
+              '&customerMobilePhone=${widget.customerMobilePhone}',
+            );
 
-                queryList.add(
-                  '&billingAddressStreet=${widget.billingAddressStreet}',
-                );
+            queryList.add(
+              '&billingAddressStreet=${widget.billingAddressStreet}',
+            );
 
-                queryList.add(
-                  '&billingAddressCity=${widget.billingAddressCity}',
-                );
+            queryList.add(
+              '&billingAddressCity=${widget.billingAddressCity}',
+            );
 
-                queryList.add(
-                  '&billingAddressCountry=${widget.billingAddressCountry}',
-                );
+            queryList.add(
+              '&billingAddressCountry=${widget.billingAddressCountry}',
+            );
 
-                queryList.add(
-                  '&billingAddressPostcodeZip=${widget.billingAddressPostcodeZip}',
-                );
+            queryList.add(
+              '&billingAddressPostcodeZip=${widget.billingAddressPostcodeZip}',
+            );
 
-                if (widget.billingAddressStateProvince != null) {
-                  queryList.add(
-                    '&billingAddressStateProvince=${widget.billingAddressStateProvince}',
-                  );
-                }
+            if (widget.billingAddressStateProvince != null) {
+              queryList.add(
+                '&billingAddressStateProvince=${widget.billingAddressStateProvince}',
+              );
+            }
 
-                if (widget.shippingContactFirstName != null) {
-                  queryList.add(
-                    '&shippingContactFirstName=${widget.shippingContactFirstName}',
-                  );
-                }
-                if (widget.shippingContactLastName != null) {
-                  queryList.add(
-                    '&shippingContactLastName=${widget.shippingContactLastName}',
-                  );
-                }
+            if (widget.shippingContactFirstName != null) {
+              queryList.add(
+                '&shippingContactFirstName=${widget.shippingContactFirstName}',
+              );
+            }
+            if (widget.shippingContactLastName != null) {
+              queryList.add(
+                '&shippingContactLastName=${widget.shippingContactLastName}',
+              );
+            }
 
-                if (widget.shippingContactEmail != null) {
-                  queryList.add(
-                    '&shippingContactEmail=${widget.shippingContactEmail}',
-                  );
-                }
+            if (widget.shippingContactEmail != null) {
+              queryList.add(
+                '&shippingContactEmail=${widget.shippingContactEmail}',
+              );
+            }
 
-                if (widget.shippingContactMobilePhone != null) {
-                  queryList.add(
-                    '&shippingContactMobilePhone=${widget.shippingContactMobilePhone}',
-                  );
-                }
+            if (widget.shippingContactMobilePhone != null) {
+              queryList.add(
+                '&shippingContactMobilePhone=${widget.shippingContactMobilePhone}',
+              );
+            }
 
-                if (widget.shippingAddressStreet != null) {
-                  queryList.add(
-                    '&shippingAddressStreet=${widget.shippingAddressStreet}',
-                  );
-                }
+            if (widget.shippingAddressStreet != null) {
+              queryList.add(
+                '&shippingAddressStreet=${widget.shippingAddressStreet}',
+              );
+            }
 
-                if (widget.shippingAddressCity != null) {
-                  queryList.add(
-                    '&shippingAddressCity=${widget.shippingAddressCity}',
-                  );
-                }
+            if (widget.shippingAddressCity != null) {
+              queryList.add(
+                '&shippingAddressCity=${widget.shippingAddressCity}',
+              );
+            }
 
-                if (widget.shippingAddressCountry != null) {
-                  queryList.add(
-                    '&shippingAddressCountry=${widget.shippingAddressCountry}',
-                  );
-                }
+            if (widget.shippingAddressCountry != null) {
+              queryList.add(
+                '&shippingAddressCountry=${widget.shippingAddressCountry}',
+              );
+            }
 
-                if (widget.shippingAddressPostcodeZip != null) {
-                  queryList.add(
-                    '&shippingAddressPostcodeZip=${widget.shippingAddressPostcodeZip}',
-                  );
-                }
+            if (widget.shippingAddressPostcodeZip != null) {
+              queryList.add(
+                '&shippingAddressPostcodeZip=${widget.shippingAddressPostcodeZip}',
+              );
+            }
 
-                if (widget.shippingAddressStateProvince != null) {
-                  queryList.add(
-                    '&shippingAddressStateProvince=${widget.shippingAddressStateProvince}',
-                  );
-                }
+            if (widget.shippingAddressStateProvince != null) {
+              queryList.add(
+                '&shippingAddressStateProvince=${widget.shippingAddressStateProvince}',
+              );
+            }
 
-                queryList.add('&responseType=html');
+            queryList.add('&responseType=html');
 
-                _webViewController.loadUrl(queryList.join());
-              },
-              onProgress: (progress) {
-                showProgressDialog(context);
-              },
-              onPageFinished: (url) {
-                Navigator.pop(context);
-                _webViewController.runJavascriptReturningResult("(function(){return window.document.body.outerHTML})();").then((response) {
-                  var content = response.replaceAll("\\u003C", "<");
-                  if (content == "null" ||
-                      content == "\"<body></body>\"" ||
-                      content.contains("Web page not available") ||
-                      content.contains("Something went wrong!") ||
-                      content.contains("err-message")) {
-                    var error = content == "null" ? "unknown" : "network";
-                    if (content.contains("err-message")) {
-                      try {
-                        var data = content.replaceAll(RegExp(r'<[^>]*>'), "").replaceAll("\\", "");
-                        var json = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
-                        error = jsonDecode(json)['error']['err-message'];
-                      } catch (ex) {
-                        console("error => ex: $ex");
-                      }
-                    }
-                    console("error => content: $error");
-                    showErrorDialog(context, "Something went wrong\n$error");
+            _webViewController.loadUrl(queryList.join());
+          },
+          onProgress: (progress) {
+            if (!_isLoading) {
+              setState(() {
+                _isLoading = true;
+              });
+            }
+            // showProgressDialog(context);
+          },
+          onPageFinished: (url) {
+            if (_isLoading) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+            _webViewController.runJavascriptReturningResult("(function(){return window.document.body.outerHTML})();").then((response) {
+              var content = response.replaceAll("\\u003C", "<");
+              if (content == "null" || content == "\"<body></body>\"" || content.contains("Web page not available") || content.contains("Something went wrong!") || content.contains("err-message")) {
+                var error = content == "null" ? "unknown" : "network";
+                if (content.contains("err-message")) {
+                  try {
+                    var data = content.replaceAll(RegExp(r'<[^>]*>'), "").replaceAll("\\", "");
+                    var json = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
+                    error = jsonDecode(json)['error']['err-message'];
+                  } catch (ex) {
+                    console("error => ex: $ex");
                   }
+                }
+                console("error => content: $error");
+                setState(() {
+                  _errorMessage = error;
                 });
-              },
-              javascriptChannels: _createJavascriptChannels(context),
-            ),
-          ],
-        ));
+                // showErrorDialog(context, "Something went wrong\n$error");
+              }
+            });
+          },
+          javascriptChannels: _createJavascriptChannels(context),
+        ),
+        if (_isLoading) viewMessage(true, "One moment..."),
+        if (_errorMessage != null) viewMessage(false, _errorMessage.toString(), opacity: 1),
+      ],
+    );
   }
 
   Set<JavascriptChannel> _createJavascriptChannels(BuildContext context) {
@@ -330,7 +360,7 @@ class _PAYableIPGState extends State<PAYableIPG> {
       JavascriptChannel(
         name: 'onPaymentError',
         onMessageReceived: (message) {
-          widget.onPaymentError(message.toString());
+          widget.onPaymentError(message.message);
         },
       ),
       JavascriptChannel(
@@ -342,67 +372,30 @@ class _PAYableIPGState extends State<PAYableIPG> {
       JavascriptChannel(
         name: 'onPaymentCompleted',
         onMessageReceived: (message) {
-          widget.onPaymentCompleted(message.toString());
+          widget.onPaymentCompleted(message.message);
         },
       ),
     };
   }
 
-  showProgressDialog(BuildContext context) async {
-    if (_isLoading) return;
-    _isLoading = true;
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            elevation: 0,
-            backgroundColor: Colors.red.withOpacity(0),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(width: 20),
-                Text(
-                  'One moment...',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+  viewMessage(bool progress, String message, {double opacity = 0.8}) {
+    return Container(
+      constraints: const BoxConstraints.expand(),
+      color: Colors.white.withOpacity(opacity),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (progress) const CircularProgressIndicator(),
+          if (progress) const SizedBox(width: 20),
+          Text(
+            message,
+            style: const TextStyle(
+              color: Colors.black,
             ),
           ),
-        );
-      },
-    );
-    _isLoading = false;
-  }
-
-  showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(1),
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            title: const Text('Error'),
-            content: Text(
-              message,
-            ),
-            actions: [
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () {},
-              )
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 
