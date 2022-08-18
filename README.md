@@ -146,7 +146,7 @@ void main() {
 
 ## Demo
 
-![](/screen.gif)
+![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
 
 > If you want to do more customizations on this package you can get the source code from this repository and use it for further developments.
 
