@@ -37,7 +37,7 @@ payable_ipg: ^1.0.1
 import 'package:payable_ipg/payable_ipg.dart';
 ```
 
-<b>2.</b> Create PAYable IPG client with
+<b>2.</b> Create PAYable IPG client with `PAYableIPGClient`.
 
 ```dart 
 PAYableIPGClient ipgClient = PAYableIPGClient(
