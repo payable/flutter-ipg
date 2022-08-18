@@ -41,11 +41,11 @@ import 'package:payable_ipg/payable_ipg.dart';
 
 ```dart 
 PAYableIPGClient ipgClient = PAYableIPGClient(
-    merchantKey: "A75BCD8EF30E529A",
-    merchantToken: "B8727C74D29E210F9A297B65690C0140",
-    refererUrl: "https://www.sandboxmerdev.payable.lk",
-    logoUrl: "https://bizenglish.adaderana.lk/wp-content/uploads/NOLIMIT-logo.jpg",
-    environment: IPGEnvironment.sandbox,
+    merchantKey: "YOUR_MERCHANT_KEY",
+    merchantToken: "YOUR_MERCHANT_TOKEN",
+    refererUrl: "YOUR_REQUEST_URL",
+    logoUrl: "YOUR_COMPANY_LOGO",
+    environment: IPGEnvironment.sandbox, // optional
 );
 ```
 
@@ -88,42 +88,7 @@ PAYableIPG(
 )
 ```
 
-* Optional parameters
-
-```java
-payableSale.setReceiptEmail("test@payable.lk");
-payableSale.setReceiptSMS("0110000000");
-payableSale.setOrderTracking("invoice56");
-payableSale.setTerminalId("1254");
-```
-
-<hr/>
-
-### Advanced Usage
-
-##### PAYable events
-
-| Method | Callback
-|--|--|
-| `boolean requestProfileList()` | `onProfileList(List<PayableProfile> payableProfiles)`
-| `boolean requestVoid(String txId)` | `onVoid(PayableResponse payableResponse)`
-
-* `PayableProfile`
-
-```java
-String tid;
-String name;
-String currency;
-Integer installment;
-```
-
-* `PAYableResponse`
-
-```java
-int status;
-String txId;
-String error;
-```
+> All the shipping details and notification URL are optional.
 
 <hr/>
 
@@ -136,10 +101,10 @@ import 'package:payable_ipg/payable_ipg.dart';
 void main() {
   
   PAYableIPGClient ipgClient = PAYableIPGClient(
-    merchantKey: "A75BCD8EF30E529A",
-    merchantToken: "B8727C74D29E210F9A297B65690C0140",
-    refererUrl: "https://www.sandboxmerdev.payable.lk",
-    logoUrl: "https://bizenglish.adaderana.lk/wp-content/uploads/NOLIMIT-logo.jpg",
+    merchantKey: "YOUR_MERCHANT_KEY",
+    merchantToken: "YOUR_MERCHANT_TOKEN",
+    refererUrl: "YOUR_REQUEST_URL",
+    logoUrl: "YOUR_COMPANY_LOGO",
     environment: IPGEnvironment.sandbox,
   );
 
@@ -187,7 +152,6 @@ void main() {
     ),
   );
 }
-
 ```
 
 PAYable IPG SDK - Flutter Integration

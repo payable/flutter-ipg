@@ -9,7 +9,7 @@ void main() {
     merchantToken: "B8727C74D29E210F9A297B65690C0140",
     refererUrl: "https://www.sandboxmerdev.payable.lk",
     logoUrl: "https://bizenglish.adaderana.lk/wp-content/uploads/NOLIMIT-logo.jpg",
-    environment: IPGEnvironment.sandbox,
+    environment: IPGEnvironment.sandbox, // optional
   );
 
   runApp(
