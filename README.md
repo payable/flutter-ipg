@@ -82,7 +82,7 @@ PAYableIPG(
 
 <hr/>
 
-##### Example Usage
+## Example Usage
 
 ```dart
 import 'package:flutter/material.dart';
@@ -143,5 +143,9 @@ void main() {
   );
 }
 ```
+
+## Demo
+
+![](/screen.gif)
 
 PAYable IPG SDK - Flutter Integration
