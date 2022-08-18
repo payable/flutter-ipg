@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-enum Environment { production, sandbox }
+enum IPGEnvironment { production, sandbox }
 
 typedef OnPaymentPageLoaded = void Function();
 
@@ -52,7 +52,7 @@ class PAYableIPG extends StatefulWidget {
   int buttonType;
   int statusViewDuration;
 
-  Environment environment;
+  IPGEnvironment environment;
   bool debug;
 
   OnPaymentPageLoaded? onPaymentPageLoaded;
@@ -92,7 +92,7 @@ class PAYableIPG extends StatefulWidget {
     this.notificationUrl,
     this.buttonType = 2,
     this.statusViewDuration = 5,
-    this.environment = Environment.production,
+    this.environment = IPGEnvironment.production,
     this.debug = false,
     this.onPaymentPageLoaded,
     this.onPaymentStarted,
@@ -126,7 +126,7 @@ class _PAYableIPGState extends State<PAYableIPG> {
                 List<String> queryList = [];
 
                 queryList.add(
-                  'https://us-central1-payable-mobile.cloudfunctions.net/ipg/?',
+                  'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.environment.name}/?',
                 );
 
                 queryList.add(
@@ -143,10 +143,6 @@ class _PAYableIPGState extends State<PAYableIPG> {
 
                 queryList.add(
                   '&integrationVersion=1.0.1',
-                );
-
-                queryList.add(
-                  '&integrationEnv=${widget.environment}',
                 );
 
                 queryList.add(

@@ -1,7 +1,8 @@
 name: payable_ipg
 description: PAYable IPG
 version: 0.0.1
-repository: https://github.com/flutter/packages/tree/main/packages/adaptive_scaffold
+repository: https://github.com/payable/flutter-ipg
+homepage: https://ipg.flutter.payable.lk
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
