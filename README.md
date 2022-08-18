@@ -11,7 +11,7 @@ Flutter SDK - [ipg.flutter.payable.lk](https://ipg.flutter.payable.lk) | [Create
 
 ### Initialization
 
-1. Change the `minSdkVersion` as below from your app level `build.gradle` file.
+<b>1.</b> Change the `minSdkVersion` as below from your app level `build.gradle` file.
 
 ```gradle
 android {
@@ -21,7 +21,7 @@ android {
 }
 ```
 
-2. Add the below package into your `pubspec.yaml` file.
+<b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
 payable_ipg: ^1.0.1
