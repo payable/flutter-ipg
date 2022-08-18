@@ -127,7 +127,7 @@ void main() {
           shippingAddressCountry: "LK",
           shippingAddressPostcodeZip: "10350",
           shippingAddressStateProvince: "Western",
-          notificationUrl: "https://us-central1-payable-mobile.cloudfunctions.net/ipg/request-test",
+          notificationUrl: "https://your.org/request-test",
           onPaymentCompleted: (data) {
             print("onPaymentCompleted: $data");
           },
