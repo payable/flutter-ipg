@@ -1,4 +1,4 @@
-### PAYable IPG Package - Flutter Integration
+### PAYable IPG - Flutter Integration
 
 ![](https://i.imgur.com/ERpCDa7.png)
 
