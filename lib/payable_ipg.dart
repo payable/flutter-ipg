@@ -135,6 +135,8 @@ class PAYableIPG extends StatefulWidget {
 class _PAYableIPGState extends State<PAYableIPG> {
   var _isLoading = false;
   String? _errorMessage;
+  bool _isWebResourceError = false;
+  String? _urlBeforeError;
   late WebViewController _webViewController;
 
   @override
@@ -143,6 +145,7 @@ class _PAYableIPGState extends State<PAYableIPG> {
       children: [
         WebView(
           javascriptMode: JavascriptMode.unrestricted,
+          javascriptChannels: _createJavascriptChannels(context),
           onWebViewCreated: (controller) {
             // controller.complete(webViewController);
             _webViewController = controller;
@@ -153,6 +156,10 @@ class _PAYableIPGState extends State<PAYableIPG> {
             queryList.add(
               'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/?',
             );
+
+            // queryList.add(
+            //   'https://us-central1-payable-mobile.cloudfunctions.net/ipg/empty/?',
+            // );
 
             if (widget.uid != null) {
               queryList.add(
@@ -305,49 +312,78 @@ class _PAYableIPGState extends State<PAYableIPG> {
               queryList.add('&responseType=html');
             }
 
-            _webViewController.loadUrl(queryList.join());
+            loadUrl(queryList.join());
           },
           onProgress: (progress) {
-            if (!_isLoading) {
-              setState(() {
-                _isLoading = true;
-              });
-            }
             // showProgressDialog(context);
+            console('onProgress: $progress');
+
+            if (progress >= 0 && progress < 100) {
+              if (!_isLoading) {
+                setState(() {
+                  _isLoading = true;
+                });
+              }
+            } else if (progress == 100) {
+              if (_isLoading) {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            }
+          },
+          onWebResourceError: (error) {
+            console('onWebResourceError: ${error.description}');
+            _isWebResourceError = true;
+            _errorMessage = error.description;
           },
           onPageFinished: (url) {
-            if (_isLoading) {
+            console('onPageFinished: $url');
+            _urlBeforeError = url;
+            if (_isWebResourceError) {
               setState(() {
-                _isLoading = false;
+                _isWebResourceError = false;
+              });
+              widget.onPaymentError(_errorMessage!);
+            } else {
+              _webViewController.runJavascriptReturningResult("(function(){return window.document.body.outerHTML})();").then((response) {
+                console('response $response');
+                var content = response.replaceAll("\\u003C", "<");
+                if (content == "null" || content == "\"<body></body>\"" || content.contains("Web page not available") || content.contains("Something went wrong!") || content.contains("err-message")) {
+                  var error = content == "null" ? "unknown" : "network";
+                  if (content.contains("err-message")) {
+                    try {
+                      var data = content.replaceAll(RegExp(r'<[^>]*>'), "").replaceAll("\\", "");
+                      var json = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
+                      error = jsonDecode(json)['error']['err-message'];
+                    } catch (ex) {
+                      console("error => ex: $ex");
+                    }
+                  }
+                  console("error => content: $error");
+                  setState(() {
+                    _errorMessage = error;
+                  });
+                  widget.onPaymentError(error);
+                  // showErrorDialog(context, "Something went wrong\n$error");
+                } else if (_errorMessage != null) {
+                  setState(() {
+                    _errorMessage = null;
+                  });
+                }
               });
             }
-            _webViewController.runJavascriptReturningResult("(function(){return window.document.body.outerHTML})();").then((response) {
-              var content = response.replaceAll("\\u003C", "<");
-              if (content == "null" || content == "\"<body></body>\"" || content.contains("Web page not available") || content.contains("Something went wrong!") || content.contains("err-message")) {
-                var error = content == "null" ? "unknown" : "network";
-                if (content.contains("err-message")) {
-                  try {
-                    var data = content.replaceAll(RegExp(r'<[^>]*>'), "").replaceAll("\\", "");
-                    var json = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
-                    error = jsonDecode(json)['error']['err-message'];
-                  } catch (ex) {
-                    console("error => ex: $ex");
-                  }
-                }
-                console("error => content: $error");
-                setState(() {
-                  _errorMessage = error;
-                });
-                // showErrorDialog(context, "Something went wrong\n$error");
-              }
-            });
           },
-          javascriptChannels: _createJavascriptChannels(context),
         ),
         if (_isLoading) viewMessage(true, "One moment..."),
-        if (_errorMessage != null) viewMessage(false, _errorMessage.toString(), opacity: 1),
+        if (_errorMessage != null) viewMessage(false, 'Oops! something went wrong.', opacity: 1, textColor: Colors.red),
       ],
     );
+  }
+
+  void loadUrl(String url) {
+    _urlBeforeError = url;
+    _webViewController.loadUrl(url);
   }
 
   Set<JavascriptChannel> _createJavascriptChannels(BuildContext context) {
@@ -389,22 +425,33 @@ class _PAYableIPGState extends State<PAYableIPG> {
     };
   }
 
-  viewMessage(bool progress, String message, {double opacity = 0.8}) {
+  viewMessage(bool progress, String message, {double opacity = 0.8, Color textColor = Colors.black}) {
     return Container(
       constraints: const BoxConstraints.expand(),
       color: Colors.white.withOpacity(opacity),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (progress) const CircularProgressIndicator(),
-          if (progress) const SizedBox(width: 20),
+          if (progress) const SizedBox(height: 20),
           Text(
             message,
-            style: const TextStyle(
-              color: Colors.black,
+            style: TextStyle(
+              color: textColor,
             ),
           ),
+          const SizedBox(height: 20),
+          // if (!progress)
+          //   ElevatedButton(
+          //     onPressed: () {
+          //       if (_isLoading) return;
+          //       if (_urlBeforeError != null) {
+          //         loadUrl(_urlBeforeError!);
+          //       }
+          //     },
+          //     child: Text(_isLoading ? 'Reloading...' : 'Reload'),
+          //   )
         ],
       ),
     );
