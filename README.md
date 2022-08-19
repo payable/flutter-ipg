@@ -174,7 +174,7 @@ var data = await ipgClient.getStatus("uid", "resultIndicator");
 
 This document contains all the HTTP APIs used in this package.
 
-[https://ipg-mobile-api.payable.lk](https://ipg-mobile-api.payable.lk)
+[ipg-mobile-api.payable.lk](https://ipg-mobile-api.payable.lk)
 
 ### Demo
 
