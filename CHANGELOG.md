@@ -1,3 +1,7 @@
+## 1.0.6
+
+* controller added
+
 ## 1.0.5
 
 * status added

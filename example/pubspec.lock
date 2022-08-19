@@ -145,10 +145,10 @@ packages:
   payable_ipg:
     dependency: "direct main"
     description:
-      name: payable_ipg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.6"
   plugin_platform_interface:
     dependency: transitive
     description:

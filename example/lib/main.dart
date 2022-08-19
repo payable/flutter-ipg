@@ -60,8 +60,8 @@ PAYableIPGSession payableIPGSession = PAYableIPGSession(
   environment: IPGEnvironment.sandbox,
 );
 
-void getStatus() async {
-  var data = await ipgClient.getStatus("uid", "resultIndicator");
+void getStatus(String uid, String resultIndicator) async {
+  var data = await ipgClient.getStatus(uid, resultIndicator);
   print(data);
 }
 

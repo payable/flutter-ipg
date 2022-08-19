@@ -16,6 +16,7 @@ class PAYableIPGClient {
   String refererUrl;
   String logoUrl;
   IPGEnvironment environment;
+  WebViewController? webViewController;
 
   PAYableIPGClient({
     required this.merchantKey,
@@ -145,6 +146,7 @@ class _PAYableIPGState extends State<PAYableIPG> {
           onWebViewCreated: (controller) {
             // controller.complete(webViewController);
             _webViewController = controller;
+            widget.ipgClient.webViewController = controller;
 
             List<String> queryList = [];
 
