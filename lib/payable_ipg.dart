@@ -42,7 +42,7 @@ class PAYableIPGClient {
   }
 }
 
-typedef OnPaymentPageLoaded = void Function();
+typedef OnPaymentPageLoaded = void Function(String uid);
 
 typedef OnPaymentStarted = void Function();
 
@@ -392,7 +392,7 @@ class _PAYableIPGState extends State<PAYableIPG> {
         name: 'onPaymentPageLoaded',
         onMessageReceived: (message) {
           if (widget.onPaymentPageLoaded != null) {
-            widget.onPaymentPageLoaded!();
+            widget.onPaymentPageLoaded!(message.message);
           }
         },
       ),

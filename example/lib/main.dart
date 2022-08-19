@@ -47,7 +47,7 @@ PAYableIPG payableIPG = PAYableIPG(
 );
 
 PAYableIPGSession payableIPGSession = PAYableIPGSession(
-  uid: "969077C7-EBB5-428A-9F09-FF195560F200",
+  uid: "9727F698-C1CE-4E22-96C6-9635EE600BA3",
   onPaymentCompleted: (data) {
     Fluttertoast.showToast(msg: "onPaymentCompleted: $data");
   },
