@@ -1,3 +1,11 @@
+## 1.0.8
+
+* version update
+
+## 1.0.7
+
+* error message updated
+
 ## 1.0.6
 
 * controller added
