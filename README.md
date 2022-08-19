@@ -170,6 +170,12 @@ PAYableIPGSession(
 var data = await ipgClient.getStatus("uid", "resultIndicator");
 ```
 
+### API Documentation
+
+This document contains all the HTTP APIs used in this package.
+
+[ipg-mobile-api.payable.lk](https://ipg-mobile-api.payable.lk)
+
 ### Demo
 
 ![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
