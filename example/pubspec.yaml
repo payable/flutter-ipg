@@ -1,5 +1,5 @@
-name: payable_ipg_example
-description: PAYable IPG Example
+name: payable_ipg_demo
+description: PAYable IPG Demo
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
