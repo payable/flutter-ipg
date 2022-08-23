@@ -24,17 +24,6 @@ PAYableIPG payableIPG = PAYableIPG(
   billingAddressCity: "Dehiwala",
   billingAddressCountry: "LK",
   billingAddressPostcodeZip: "10350",
-  billingAddressStateProvince: "Western",
-  shippingContactFirstName: "Aslam",
-  shippingContactLastName: "Kasun",
-  shippingContactEmail: "test@org.lk",
-  shippingContactMobilePhone: "0777123456",
-  shippingAddressStreet: "Hill Street",
-  shippingAddressCity: "Dehiwala",
-  shippingAddressCountry: "LK",
-  shippingAddressPostcodeZip: "10350",
-  shippingAddressStateProvince: "Western",
-  notificationUrl: "https://us-central1-payable-mobile.cloudfunctions.net/ipg/request-test",
   onPaymentCompleted: (data) {
     Fluttertoast.showToast(msg: "onPaymentCompleted: $data");
   },
