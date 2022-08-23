@@ -24,7 +24,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^1.0.9
+payable_ipg: ^1.1.1
 ```
 
 <hr/>
@@ -65,7 +65,6 @@ PAYableIPG(
     billingAddressCity: "Dehiwala",
     billingAddressCountry: "LK",
     billingAddressPostcodeZip: "10350",
-    billingAddressStateProvince: "Western",
     onPaymentCompleted: (data) {
       print("onPaymentCompleted: $data");
     },
@@ -117,17 +116,6 @@ void main() {
           billingAddressCity: "Dehiwala",
           billingAddressCountry: "LK",
           billingAddressPostcodeZip: "10350",
-          billingAddressStateProvince: "Western",
-          shippingContactFirstName: "Aslam",
-          shippingContactLastName: "Kasun",
-          shippingContactEmail: "test@org.lk",
-          shippingContactMobilePhone: "0777123456",
-          shippingAddressStreet: "Hill Street",
-          shippingAddressCity: "Dehiwala",
-          shippingAddressCountry: "LK",
-          shippingAddressPostcodeZip: "10350",
-          shippingAddressStateProvince: "Western",
-          notificationUrl: "https://your.org/request-test",
           onPaymentCompleted: (data) {
             print("onPaymentCompleted: $data");
           },
