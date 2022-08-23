@@ -7,7 +7,7 @@ Flutter Package - [ipg.flutter.payable.lk](https://ipg.flutter.payable.lk) | [Cr
 [![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg)
 [![Build Status](https://travis-ci.com/payable/flutter-ipg.svg?branch=master)](https://travis-ci.com/payable/flutter-ipg)
 
-<hr>
+<hr/>
 
 ### Initialization
 
@@ -27,7 +27,7 @@ android {
 payable_ipg: ^1.0.9
 ```
 
-<hr>
+<hr/>
 
 ### Implementation
 
@@ -144,6 +144,8 @@ void main() {
 }
 ```
 
+<hr/>
+
 ### Advanced Usage
 
 <b>1.</b> Pay with session `uid` without `merchantKey` and `merchantToken`.
@@ -170,11 +172,15 @@ PAYableIPGSession(
 var data = await ipgClient.getStatus("uid", "resultIndicator");
 ```
 
+<hr/>
+
 ### API Documentation
 
 This document contains all the HTTP APIs used in this package.
 
 [ipg-mobile-api.payable.lk](https://ipg-mobile-api.payable.lk)
+
+<hr/>
 
 ### Demo
 
