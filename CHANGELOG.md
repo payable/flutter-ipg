@@ -1,3 +1,7 @@
+## 1.1.1
+
+* optional params removed
+
 ## 1.0.9
 
 * uuid update
