@@ -1,517 +1,237 @@
 import 'dart:convert';
-import 'dart:core';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:package_info/package_info.dart';
 
-enum IPGEnvironment {
-  production,
-  sandbox,
-}
+import 'package:flutter/material.dart';
 
-class PAYableIPGClient {
-  String merchantKey;
-  String merchantToken;
-  String refererUrl;
-  String logoUrl;
-  IPGEnvironment environment;
-  WebViewController? webViewController;
+class PayableIPG extends StatefulWidget {
 
-  PAYableIPGClient({
-    required this.merchantKey,
-    required this.merchantToken,
-    required this.refererUrl,
+  // Required params for all payments
+  final int paymentType;
+  final String logoUrl;
+  final String returnUrl;
+  final String checkValue;
+  final String orderDescription;
+  final String invoiceId;
+  final String merchantKey;
+  final String customerFirstName;
+  final String customerLastName;
+  final String customerMobilePhone;
+  final String customerEmail;
+  final String billingAddressStreet;
+  final String billingAddressCity;
+  final String billingAddressCountry;
+  final String amount;
+  final String currencyCode;
+
+  // Required params only for recurring payments when paymentType is 2
+  final String? startDate;
+  final String? endDate;
+  final String? recurringAmount;
+  final String? interval;
+  final String? isRetry;
+  final String? retryAttempts;
+  final String? doFirstPayment;
+
+  // Optional params
+  final String? custom1;
+  final String? custom2;
+  final String? customerPhone;
+  final String? billingAddressStreet2;
+  final String? billingCompanyName;
+  final String? billingAddressPostcodeZip;
+  final String? billingAddressStateProvince;
+  final String? shippingContactFirstName;
+  final String? shippingContactLastName;
+  final String? shippingContactMobilePhone;
+  final String? shippingContactPhone;
+  final String? shippingContactEmail;
+  final String? shippingCompanyName;
+  final String? shippingAddressStreet;
+  final String? shippingAddressStreet2;
+  final String? shippingAddressCity;
+  final String? shippingAddressStateProvince;
+  final String? shippingAddressCountry;
+  final String? shippingAddressPostcodeZip;
+
+  const PayableIPG({
+    super.key,
+    required this.paymentType,
     required this.logoUrl,
-    this.environment = IPGEnvironment.production,
-  });
-
-  Future<String> getStatus(String uid, String resultIndicator) async {
-    var url = Uri.parse('https://us-central1-payable-mobile.cloudfunctions.net/ipg/${environment.name}/status-view').replace(queryParameters: {
-      'uid': uid,
-      'resultIndicator': resultIndicator,
-      'responseType': 'json',
-    });
-
-    try {
-      var response = await http.get(url);
-      return response.body;
-    } catch (ex) {
-      return ex.toString();
-    }
-  }
-}
-
-typedef OnPaymentPageLoaded = void Function(String uid);
-
-typedef OnPaymentStarted = void Function();
-
-typedef OnPaymentError = void Function(String error);
-
-typedef OnPaymentCancelled = void Function();
-
-typedef OnPaymentCompleted = void Function(String data);
-
-class PAYableIPG extends StatefulWidget {
-  PAYableIPGClient ipgClient;
-
-  num amount;
-  String currencyCode;
-  String orderDescription;
-
-  String customerFirstName;
-  String customerLastName;
-  String customerEmail;
-  String customerMobilePhone;
-  String billingAddressStreet;
-  String billingAddressCity;
-  String billingAddressCountry;
-  String billingAddressPostcodeZip;
-  String? billingAddressStateProvince;
-
-  String? shippingContactFirstName;
-  String? shippingContactLastName;
-  String? shippingContactEmail;
-  String? shippingContactMobilePhone;
-  String? shippingAddressStreet;
-  String? shippingAddressCity;
-  String? shippingAddressCountry;
-  String? shippingAddressPostcodeZip;
-  String? shippingAddressStateProvince;
-
-  String? notificationUrl;
-
-  int buttonType;
-  int statusViewDuration;
-
-  OnPaymentPageLoaded? onPaymentPageLoaded;
-  OnPaymentStarted? onPaymentStarted;
-
-  OnPaymentError onPaymentError;
-  OnPaymentCancelled onPaymentCancelled;
-  OnPaymentCompleted onPaymentCompleted;
-
-  String? uid;
-
-  PAYableIPG({
-    Key? key,
-    required this.ipgClient,
-    required this.amount,
-    required this.currencyCode,
+    required this.returnUrl,
+    required this.checkValue,
     required this.orderDescription,
+    required this.invoiceId,
+    required this.merchantKey,
     required this.customerFirstName,
     required this.customerLastName,
-    required this.customerEmail,
     required this.customerMobilePhone,
+    required this.customerEmail,
     required this.billingAddressStreet,
     required this.billingAddressCity,
     required this.billingAddressCountry,
-    required this.billingAddressPostcodeZip,
+    required this.amount,
+    required this.currencyCode,
+    this.startDate,
+    this.endDate,
+    this.recurringAmount,
+    this.interval,
+    this.isRetry,
+    this.retryAttempts,
+    this.doFirstPayment,
+    this.custom1,
+    this.custom2,
+    this.customerPhone,
+    this.billingAddressStreet2,
+    this.billingCompanyName,
+    this.billingAddressPostcodeZip,
     this.billingAddressStateProvince,
     this.shippingContactFirstName,
     this.shippingContactLastName,
-    this.shippingContactEmail,
     this.shippingContactMobilePhone,
+    this.shippingContactPhone,
+    this.shippingContactEmail,
+    this.shippingCompanyName,
     this.shippingAddressStreet,
+    this.shippingAddressStreet2,
     this.shippingAddressCity,
+    this.shippingAddressStateProvince,
     this.shippingAddressCountry,
     this.shippingAddressPostcodeZip,
-    this.shippingAddressStateProvince,
-    this.notificationUrl,
-    this.buttonType = 2,
-    this.statusViewDuration = 5,
-    this.onPaymentPageLoaded,
-    this.onPaymentStarted,
-    required this.onPaymentError,
-    required this.onPaymentCancelled,
-    required this.onPaymentCompleted,
-    this.uid,
-  }) : super(key: key);
+  });
 
   @override
-  State<PAYableIPG> createState() => _PAYableIPGState();
+  PayableIPGState createState() => PayableIPGState();
 }
 
-class _PAYableIPGState extends State<PAYableIPG> {
-  var _isLoading = false;
-  String? _errorMessage;
-  bool _isWebResourceError = false;
-  String? _urlBeforeError;
-  late WebViewController _webViewController;
+
+class PayableIPGState extends State<PayableIPG> {
+  String? _responseUrl;
+  WebViewController controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setBackgroundColor(const Color(0x00000000))
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {},
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {},
+        onWebResourceError: (WebResourceError error) {},
+      ),
+    );
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        WebView(
-          javascriptMode: JavascriptMode.unrestricted,
-          javascriptChannels: _createJavascriptChannels(context),
-          onWebViewCreated: (controller) {
-            // controller.complete(webViewController);
-            _webViewController = controller;
-            widget.ipgClient.webViewController = controller;
-
-            List<String> queryList = [];
-
-            queryList.add(
-              'https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/?',
-            );
-
-            // queryList.add(
-            //   'https://us-central1-payable-mobile.cloudfunctions.net/ipg/empty/?',
-            // );
-
-            if (widget.uid != null) {
-              queryList.add(
-                'uid=${widget.uid}',
-              );
-            } else {
-              queryList.add(
-                'merchantKey=${widget.ipgClient.merchantKey}',
-              );
-
-              queryList.add(
-                '&merchantToken=${widget.ipgClient.merchantToken}',
-              );
-
-              queryList.add(
-                '&integrationType=MSDK',
-              );
-
-              queryList.add(
-                '&integrationVersion=1.0.1',
-              );
-
-              queryList.add(
-                '&refererUrl=${widget.ipgClient.refererUrl}',
-              );
-
-              queryList.add(
-                '&logoUrl=${widget.ipgClient.logoUrl}',
-              );
-
-              queryList.add(
-                '&notificationUrl=${widget.notificationUrl}',
-              );
-
-              queryList.add(
-                '&returnUrl=https://us-central1-payable-mobile.cloudfunctions.net/ipg/${widget.ipgClient.environment.name}/status-view',
-              );
-
-              queryList.add(
-                '&buttonType=${widget.buttonType}',
-              );
-
-              queryList.add(
-                '&statusViewDuration=${widget.statusViewDuration}',
-              );
-
-              queryList.add(
-                '&amount=${widget.amount}',
-              );
-
-              queryList.add(
-                '&currencyCode=${widget.currencyCode}',
-              );
-
-              queryList.add(
-                '&orderDescription=${widget.orderDescription}',
-              );
-
-              queryList.add(
-                '&customerFirstName=${widget.customerFirstName}',
-              );
-
-              queryList.add(
-                '&customerLastName=${widget.customerLastName}',
-              );
-
-              queryList.add(
-                '&customerEmail=${widget.customerEmail}',
-              );
-
-              queryList.add(
-                '&customerMobilePhone=${widget.customerMobilePhone}',
-              );
-
-              queryList.add(
-                '&billingAddressStreet=${widget.billingAddressStreet}',
-              );
-
-              queryList.add(
-                '&billingAddressCity=${widget.billingAddressCity}',
-              );
-
-              queryList.add(
-                '&billingAddressCountry=${widget.billingAddressCountry}',
-              );
-
-              queryList.add(
-                '&billingAddressPostcodeZip=${widget.billingAddressPostcodeZip}',
-              );
-
-              if (widget.billingAddressStateProvince != null) {
-                queryList.add(
-                  '&billingAddressStateProvince=${widget.billingAddressStateProvince}',
-                );
-              }
-
-              if (widget.shippingContactFirstName != null) {
-                queryList.add(
-                  '&shippingContactFirstName=${widget.shippingContactFirstName}',
-                );
-              }
-              if (widget.shippingContactLastName != null) {
-                queryList.add(
-                  '&shippingContactLastName=${widget.shippingContactLastName}',
-                );
-              }
-
-              if (widget.shippingContactEmail != null) {
-                queryList.add(
-                  '&shippingContactEmail=${widget.shippingContactEmail}',
-                );
-              }
-
-              if (widget.shippingContactMobilePhone != null) {
-                queryList.add(
-                  '&shippingContactMobilePhone=${widget.shippingContactMobilePhone}',
-                );
-              }
-
-              if (widget.shippingAddressStreet != null) {
-                queryList.add(
-                  '&shippingAddressStreet=${widget.shippingAddressStreet}',
-                );
-              }
-
-              if (widget.shippingAddressCity != null) {
-                queryList.add(
-                  '&shippingAddressCity=${widget.shippingAddressCity}',
-                );
-              }
-
-              if (widget.shippingAddressCountry != null) {
-                queryList.add(
-                  '&shippingAddressCountry=${widget.shippingAddressCountry}',
-                );
-              }
-
-              if (widget.shippingAddressPostcodeZip != null) {
-                queryList.add(
-                  '&shippingAddressPostcodeZip=${widget.shippingAddressPostcodeZip}',
-                );
-              }
-
-              if (widget.shippingAddressStateProvince != null) {
-                queryList.add(
-                  '&shippingAddressStateProvince=${widget.shippingAddressStateProvince}',
-                );
-              }
-
-              queryList.add('&responseType=html');
-            }
-
-            loadUrl(queryList.join());
-          },
-          onProgress: (progress) {
-            // showProgressDialog(context);
-            console('onProgress: $progress');
-
-            if (progress >= 0 && progress < 100) {
-              if (!_isLoading) {
-                setState(() {
-                  _isLoading = true;
-                });
-              }
-            } else if (progress == 100) {
-              if (_isLoading) {
-                setState(() {
-                  _isLoading = false;
-                });
-              }
-            }
-          },
-          onWebResourceError: (error) {
-            console('onWebResourceError: ${error.description}');
-            _isWebResourceError = true;
-            _errorMessage = error.description;
-          },
-          onPageFinished: (url) {
-            console('onPageFinished: $url');
-            _urlBeforeError = url;
-            if (_isWebResourceError) {
-              setState(() {
-                _isWebResourceError = false;
-              });
-              widget.onPaymentError(_errorMessage!);
-            } else {
-              _webViewController.runJavascriptReturningResult("(function(){return window.document.body.outerHTML})();").then((response) {
-                console('response $response');
-                var content = response.replaceAll("\\u003C", "<");
-                if (content == "null" || content == "\"<body></body>\"" || content.contains("Web page not available") || content.contains("Something went wrong!") || content.contains("err-message")) {
-                  var error = content == "null" ? "unknown" : "network";
-                  if (content.contains("err-message")) {
-                    try {
-                      var data = content.replaceAll(RegExp(r'<[^>]*>'), "").replaceAll("\\", "");
-                      var json = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
-                      error = jsonDecode(json)['error']['err-message'];
-                    } catch (ex) {
-                      console("error => ex: $ex");
-                    }
-                  }
-                  console("error => content: $error");
-                  setState(() {
-                    _errorMessage = error;
-                  });
-                  widget.onPaymentError(error);
-                  // showErrorDialog(context, "Something went wrong\n$error");
-                } else if (_errorMessage != null) {
-                  setState(() {
-                    _errorMessage = null;
-                  });
-                }
-              });
-            }
-          },
-        ),
-        if (_isLoading) viewMessage(true, "One moment..."),
-        if (_errorMessage != null) viewMessage(false, 'Oops! something went wrong.', opacity: 1, textColor: Colors.red),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter SDK demo'),
+      ),
+      body: Center(
+        child: _responseUrl != null
+            ? WebViewWidget(controller: controller)
+            : const CircularProgressIndicator(),
+      ),
     );
   }
 
-  void loadUrl(String url) {
-    _urlBeforeError = url;
-    _webViewController.loadUrl(url);
+  @override
+  void initState() {
+    super.initState();
   }
 
-  Set<JavascriptChannel> _createJavascriptChannels(BuildContext context) {
-    return {
-      JavascriptChannel(
-        name: 'onPaymentPageLoaded',
-        onMessageReceived: (message) {
-          if (widget.onPaymentPageLoaded != null) {
-            widget.onPaymentPageLoaded!(message.message);
-          }
-        },
-      ),
-      JavascriptChannel(
-        name: 'onPaymentStarted',
-        onMessageReceived: (message) {
-          if (widget.onPaymentStarted != null) {
-            widget.onPaymentStarted!();
-          }
-        },
-      ),
-      JavascriptChannel(
-        name: 'onPaymentError',
-        onMessageReceived: (message) {
-          widget.onPaymentError(message.message);
-        },
-      ),
-      JavascriptChannel(
-        name: 'onPaymentCancelled',
-        onMessageReceived: (message) {
-          widget.onPaymentCancelled();
-        },
-      ),
-      JavascriptChannel(
-        name: 'onPaymentCompleted',
-        onMessageReceived: (message) {
-          widget.onPaymentCompleted(message.message);
-        },
-      ),
+  Future<void> fetchResponseUrl() async {
+    final Map<String, dynamic> requestData = {
+
+      // Provided from SDK side
+      "paymentType": widget.paymentType,
+      "isMobilePayment": 1,
+      "packageName": getPackageName(),
+      "integrationType": "Android SDK",
+      "integrationVersion": getVersion(),
+      "statusReturnUrl": "TODO",
+      "webhookUrl": "TODO",
+
+      // Required params
+      "logoUrl": widget.logoUrl,
+      "returnUrl": widget.returnUrl,
+      "checkValue": widget.checkValue,
+      "orderDescription": widget.orderDescription,
+      "invoiceId": widget.invoiceId,
+      "merchantKey": widget.merchantKey,
+      "customerFirstName": widget.customerFirstName,
+      "customerLastName": widget.customerLastName,
+      "customerMobilePhone": widget.customerMobilePhone,
+      "customerEmail": widget.customerEmail,
+      "billingAddressStreet": widget.billingAddressStreet,
+      "billingAddressCity": widget.billingAddressCity,
+      "billingAddressCountry": widget.billingAddressCountry,
+      "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
+      "amount": widget.amount,
+      "currencyCode": widget.currencyCode,
     };
-  }
 
-  viewMessage(bool progress, String message, {double opacity = 0.8, Color textColor = Colors.black}) {
-    return Container(
-      constraints: const BoxConstraints.expand(),
-      color: Colors.white.withOpacity(opacity),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (progress) const CircularProgressIndicator(),
-          if (progress) const SizedBox(height: 20),
-          Text(
-            message,
-            style: TextStyle(
-              color: textColor,
-            ),
-          ),
-          const SizedBox(height: 20),
-          // if (!progress)
-          //   ElevatedButton(
-          //     onPressed: () {
-          //       if (_isLoading) return;
-          //       if (_urlBeforeError != null) {
-          //         loadUrl(_urlBeforeError!);
-          //       }
-          //     },
-          //     child: Text(_isLoading ? 'Reloading...' : 'Reload'),
-          //   )
-        ],
-      ),
+    // For recurring payments
+    if (widget.paymentType == 2) {
+      requestData.addAll({
+        "startDate": widget.startDate,
+        "endDate": widget.endDate,
+        "recurringAmount": widget.recurringAmount,
+        "interval": widget.interval,
+        "isRetry": widget.isRetry,
+        "retryAttempts": widget.retryAttempts,
+        "doFirstPayment": widget.doFirstPayment,
+      });
+    }
+
+    // Optional params
+    requestData.addAll({
+      "custom1": widget.custom1,
+      "custom2": widget.custom2,
+      "customerPhone": widget.customerPhone,
+      "billingAddressStreet2": widget.billingAddressStreet2,
+      "billingCompanyName": widget.billingCompanyName,
+      "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
+      "billingAddressStateProvince": widget.billingAddressStateProvince,
+      "shippingContactFirstName": widget.shippingContactFirstName,
+      "shippingContactLastName": widget.shippingContactLastName,
+      "shippingContactMobilePhone": widget.shippingContactMobilePhone,
+      "shippingContactPhone": widget.shippingContactPhone,
+      "shippingContactEmail": widget.shippingContactEmail,
+      "shippingCompanyName": widget.shippingCompanyName,
+      "shippingAddressStreet": widget.shippingAddressStreet,
+      "shippingAddressStreet2": widget.shippingAddressStreet2,
+      "shippingAddressCity": widget.shippingAddressCity,
+      "shippingAddressStateProvince": widget.shippingAddressStateProvince,
+      "shippingAddressCountry": widget.shippingAddressCountry,
+      "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
+    });
+
+    final response = await http.post(
+      Uri.parse('https://payable-ipg-dev.web.app/ipg/dev'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestData),
     );
-  }
 
-  console(message) {
-    if (kDebugMode) {
-      print("PAYABLE-IPG-FLUTTER $message");
+    if (response.statusCode == 200) {
+      setState(() {
+        // Get the response URL
+        _responseUrl = jsonDecode(response.body)['url'];
+      });
+    } else {
+      throw Exception('Failed to load URL');
     }
   }
-}
 
-class PAYableIPGSession extends StatelessWidget {
-  String uid;
-  OnPaymentPageLoaded? onPaymentPageLoaded;
-  OnPaymentStarted? onPaymentStarted;
-  OnPaymentError onPaymentError;
-  OnPaymentCancelled onPaymentCancelled;
-  OnPaymentCompleted onPaymentCompleted;
-  IPGEnvironment environment;
+  Future<String> getPackageName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.packageName;
+  }
 
-  PAYableIPGSession({
-    Key? key,
-    required this.uid,
-    this.onPaymentPageLoaded,
-    this.onPaymentStarted,
-    required this.onPaymentError,
-    required this.onPaymentCancelled,
-    required this.onPaymentCompleted,
-    this.environment = IPGEnvironment.production,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PAYableIPG(
-      ipgClient: PAYableIPGClient(
-        merchantKey: "-",
-        merchantToken: "-",
-        refererUrl: "-",
-        logoUrl: "-",
-        environment: environment,
-      ),
-      uid: uid,
-      amount: 0,
-      currencyCode: "-",
-      orderDescription: "-",
-      customerFirstName: "-",
-      customerLastName: "-",
-      customerEmail: "-",
-      customerMobilePhone: "-",
-      billingAddressStreet: "-",
-      billingAddressCity: "-",
-      billingAddressCountry: "-",
-      billingAddressPostcodeZip: "-",
-      billingAddressStateProvince: "-",
-      onPaymentPageLoaded: onPaymentPageLoaded,
-      onPaymentStarted: onPaymentStarted,
-      onPaymentCompleted: onPaymentCompleted,
-      onPaymentCancelled: onPaymentCancelled,
-      onPaymentError: onPaymentError,
-    );
+  Future<String> getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
   }
 }
