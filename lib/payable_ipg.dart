@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:package_info/package_info.dart';
 
-import 'package:flutter/material.dart';
-
 class PayableIPG extends StatefulWidget {
 
   // Required params for all payments
-  final int paymentType;
+  final String paymentType;
   final String logoUrl;
   final String returnUrl;
   final String checkValue;
@@ -138,6 +138,7 @@ class PayableIPGState extends State<PayableIPG> {
   @override
   void initState() {
     super.initState();
+    fetchResponseUrl();
   }
 
   Future<void> fetchResponseUrl() async {
@@ -146,11 +147,11 @@ class PayableIPGState extends State<PayableIPG> {
       // Provided from SDK side
       "paymentType": widget.paymentType,
       "isMobilePayment": 1,
-      "packageName": getPackageName(),
+      "packageName": "app.pay.com", //getPackageName(),
       "integrationType": "Android SDK",
-      "integrationVersion": getVersion(),
-      "statusReturnUrl": "TODO",
-      "webhookUrl": "TODO",
+      "integrationVersion": "1.0.1", //getVersion(),
+      "statusReturnUrl": "https://payable-ipg-dev.web.app/ipg/dev/status-view",
+      "webhookUrl": "https://ipgv2-ntb.payable.lk/new-js-sdk/api/",
 
       // Required params
       "logoUrl": widget.logoUrl,
@@ -172,7 +173,7 @@ class PayableIPGState extends State<PayableIPG> {
     };
 
     // For recurring payments
-    if (widget.paymentType == 2) {
+    if (widget.paymentType == "2") {
       requestData.addAll({
         "startDate": widget.startDate,
         "endDate": widget.endDate,
@@ -185,7 +186,7 @@ class PayableIPGState extends State<PayableIPG> {
     }
 
     // Optional params
-    requestData.addAll({
+    /*requestData.addAll({
       "custom1": widget.custom1,
       "custom2": widget.custom2,
       "customerPhone": widget.customerPhone,
@@ -205,23 +206,27 @@ class PayableIPGState extends State<PayableIPG> {
       "shippingAddressStateProvince": widget.shippingAddressStateProvince,
       "shippingAddressCountry": widget.shippingAddressCountry,
       "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
-    });
+    });*/
 
+    String json = jsonEncode(requestData);
+    log("JSON: $json");
     final response = await http.post(
       Uri.parse('https://payable-ipg-dev.web.app/ipg/dev'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(requestData),
+      body: json,
     );
 
     if (response.statusCode == 200) {
+      log("Request success: ${response.body}");
       setState(() {
-        // Get the response URL
-        _responseUrl = jsonDecode(response.body)['url'];
+        _responseUrl = jsonDecode(response.body)['paymentPage'];
+        controller.loadRequest(Uri.parse(_responseUrl!));
       });
     } else {
-      throw Exception('Failed to load URL');
+      log("Request error: ${response.statusCode}");
+      throw Exception('Failed to load URL: ${response.statusCode}');
     }
   }
 
