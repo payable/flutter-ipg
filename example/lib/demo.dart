@@ -1,16 +1,19 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg/payable_ipg_client.dart';
 
-PayableIPG payableIPG = const PayableIPG(
-  paymentType: "1",
-  logoUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/images/logo.png",
-  returnUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/receipt.php",
-  checkValue: "E57182F9304558C2475604DE27A41762736973EFFADBA1E6A4540FF2A3B1357147C54D541DCE0C5E381795CB26ABE9F76E45796447D4509E43BAA15A6F923831",
-  orderDescription: "Order description goes here",
-  invoiceId: "s2vbeug4",
+PAYableIPGClient myIpgClient = const PAYableIPGClient(
+  logoUrl: "https://i.imgur.com/l21F5us.png",
+  returnUrl: "https://example.com/receipt",
   merchantKey: "A748BFC24F8F6C61",
+  merchantToken: "09FD8632EED1D1FEB9AD9A5E55427452"
+);
+
+PAYableIPG payableIPG = PAYableIPG(
+  ipgClient: myIpgClient,
+  paymentType: "1",
+  orderDescription: "Order description goes here",
+  invoiceId: "645855868",
   customerFirstName: "Tashila",
   customerLastName: "Pathum",
   customerMobilePhone: "0770507499",

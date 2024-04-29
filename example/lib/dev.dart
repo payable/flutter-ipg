@@ -10,16 +10,16 @@ String _uid = "9727F698-C1CE-4E22-96C6-9635EE600BA3";
 IPGEnvironment _ipgEnvironment = IPGEnvironment.sandbox;
 String? _resultIndicator;
 
-PAYableIPGClient getPAYableIPGClient(IPGEnvironment ipgEnvironment) {
+PAYableIPG getPAYableIPGClient(IPGEnvironment ipgEnvironment) {
   if (ipgEnvironment == IPGEnvironment.production) {
-    return PAYableIPGClient(
+    return PAYableIPG(
       merchantKey: "2C60AC94E06CFC1B",
       merchantToken: "DC9420BC7EBC2E38A19A931BB8B099EB",
       refererUrl: "https://ipgmobileteam.payable.lk",
       logoUrl: "https://i.imgur.com/l21F5us.png",
     );
   } else {
-    return PAYableIPGClient(
+    return PAYableIPG(
       merchantKey: "A75BCD8EF30E529A",
       merchantToken: "B8727C74D29E210F9A297B65690C0140",
       refererUrl: "https://www.sandboxmerdev.payable.lk",
@@ -30,7 +30,7 @@ PAYableIPGClient getPAYableIPGClient(IPGEnvironment ipgEnvironment) {
 }
 
 PAYableIPG getPAYableIPG(IPGEnvironment ipgEnvironment) {
-  PAYableIPGClient ipgClient = getPAYableIPGClient(ipgEnvironment);
+  PAYableIPG ipgClient = getPAYableIPGClient(ipgEnvironment);
   return PAYableIPG(
     ipgClient: ipgClient,
     amount: 2.00,
@@ -198,7 +198,7 @@ class _DashboardState extends State<Dashboard> {
                 child: ElevatedButton(
                   child: const Text('Status'),
                   onPressed: () {
-                    PAYableIPGClient ipgClient = getPAYableIPGClient(_ipgEnvironment);
+                    PAYableIPG ipgClient = getPAYableIPGClient(_ipgEnvironment);
                     ipgClient.getStatus(_uid, _resultIndicator!).then((response) {
                       Fluttertoast.showToast(msg: response);
                     });

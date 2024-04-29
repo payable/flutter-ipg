@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:payable_ipg/payable_ipg.dart';
 
 // Initialization PAYable IPG Client
-PAYableIPGClient ipgClient = PAYableIPGClient(
+PAYableIPG ipgClient = PAYableIPG(
   merchantKey: "A75BCD8EF30E529A",
   merchantToken: "B8727C74D29E210F9A297B65690C0140",
   refererUrl: "https://www.sandboxmerdev.payable.lk",

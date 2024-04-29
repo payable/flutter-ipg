@@ -1,21 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:payable_ipg/payable_ipg_client.dart';
+import 'package:payable_ipg/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:package_info/package_info.dart';
 
-class PayableIPG extends StatefulWidget {
+class PAYableIPG extends StatefulWidget {
+  final PAYableIPGClient ipgClient;
 
-  // Required params for all payments
-  final String paymentType;
-  final String logoUrl;
-  final String returnUrl;
-  final String checkValue;
+  // Required params for any payment
   final String orderDescription;
   final String invoiceId;
-  final String merchantKey;
+  final String paymentType;
   final String customerFirstName;
   final String customerLastName;
   final String customerMobilePhone;
@@ -56,15 +53,12 @@ class PayableIPG extends StatefulWidget {
   final String? shippingAddressCountry;
   final String? shippingAddressPostcodeZip;
 
-  const PayableIPG({
+  const PAYableIPG({
     super.key,
+    required this.ipgClient,
     required this.paymentType,
-    required this.logoUrl,
-    required this.returnUrl,
-    required this.checkValue,
     required this.orderDescription,
     required this.invoiceId,
-    required this.merchantKey,
     required this.customerFirstName,
     required this.customerLastName,
     required this.customerMobilePhone,
@@ -103,12 +97,12 @@ class PayableIPG extends StatefulWidget {
   });
 
   @override
-  PayableIPGState createState() => PayableIPGState();
+  PAYableIPGState createState() => PAYableIPGState();
 }
 
-
-class PayableIPGState extends State<PayableIPG> {
+class PAYableIPGState extends State<PAYableIPG> {
   String? _responseUrl;
+
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setBackgroundColor(const Color(0x00000000))
@@ -143,23 +137,27 @@ class PayableIPGState extends State<PayableIPG> {
 
   Future<void> fetchResponseUrl() async {
     final Map<String, dynamic> requestData = {
-
       // Provided from SDK side
+      "logoUrl": widget.ipgClient.logoUrl,
+      "returnUrl": widget.ipgClient.returnUrl,
+      "merchantKey": widget.ipgClient.merchantKey,
       "paymentType": widget.paymentType,
       "isMobilePayment": 1,
-      "packageName": "app.pay.com", //getPackageName(),
       "integrationType": "Android SDK",
-      "integrationVersion": "1.0.1", //getVersion(),
+      "integrationVersion": "2.0.0",
+      "packageName": await getPackageName(),
       "statusReturnUrl": "https://payable-ipg-dev.web.app/ipg/dev/status-view",
       "webhookUrl": "https://ipgv2-ntb.payable.lk/new-js-sdk/api/",
+      "checkValue": getCheckValue(
+          merchantKey: widget.ipgClient.merchantKey,
+          merchantToken: widget.ipgClient.merchantToken,
+          invoiceId: widget.invoiceId,
+          amount: widget.amount,
+          currencyCode: widget.currencyCode),
 
       // Required params
-      "logoUrl": widget.logoUrl,
-      "returnUrl": widget.returnUrl,
-      "checkValue": widget.checkValue,
       "orderDescription": widget.orderDescription,
       "invoiceId": widget.invoiceId,
-      "merchantKey": widget.merchantKey,
       "customerFirstName": widget.customerFirstName,
       "customerLastName": widget.customerLastName,
       "customerMobilePhone": widget.customerMobilePhone,
@@ -186,27 +184,27 @@ class PayableIPGState extends State<PayableIPG> {
     }
 
     // Optional params
-    /*requestData.addAll({
-      "custom1": widget.custom1,
-      "custom2": widget.custom2,
-      "customerPhone": widget.customerPhone,
-      "billingAddressStreet2": widget.billingAddressStreet2,
-      "billingCompanyName": widget.billingCompanyName,
-      "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
-      "billingAddressStateProvince": widget.billingAddressStateProvince,
-      "shippingContactFirstName": widget.shippingContactFirstName,
-      "shippingContactLastName": widget.shippingContactLastName,
-      "shippingContactMobilePhone": widget.shippingContactMobilePhone,
-      "shippingContactPhone": widget.shippingContactPhone,
-      "shippingContactEmail": widget.shippingContactEmail,
-      "shippingCompanyName": widget.shippingCompanyName,
-      "shippingAddressStreet": widget.shippingAddressStreet,
-      "shippingAddressStreet2": widget.shippingAddressStreet2,
-      "shippingAddressCity": widget.shippingAddressCity,
-      "shippingAddressStateProvince": widget.shippingAddressStateProvince,
-      "shippingAddressCountry": widget.shippingAddressCountry,
-      "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
-    });*/
+    requestData.addAll({
+      if (widget.custom1 != null) "custom1": widget.custom1,
+      if (widget.custom2 != null) "custom2": widget.custom2,
+      if (widget.customerPhone != null) "customerPhone": widget.customerPhone,
+      if (widget.billingAddressStreet2 != null) "billingAddressStreet2": widget.billingAddressStreet2,
+      if (widget.billingCompanyName != null) "billingCompanyName": widget.billingCompanyName,
+      if (widget.billingAddressPostcodeZip != null) "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
+      if (widget.billingAddressStateProvince != null) "billingAddressStateProvince": widget.billingAddressStateProvince,
+      if (widget.shippingContactFirstName != null) "shippingContactFirstName": widget.shippingContactFirstName,
+      if (widget.shippingContactLastName != null) "shippingContactLastName": widget.shippingContactLastName,
+      if (widget.shippingContactMobilePhone != null) "shippingContactMobilePhone": widget.shippingContactMobilePhone,
+      if (widget.shippingContactPhone != null) "shippingContactPhone": widget.shippingContactPhone,
+      if (widget.shippingContactEmail != null) "shippingContactEmail": widget.shippingContactEmail,
+      if (widget.shippingCompanyName != null) "shippingCompanyName": widget.shippingCompanyName,
+      if (widget.shippingAddressStreet != null) "shippingAddressStreet": widget.shippingAddressStreet,
+      if (widget.shippingAddressStreet2 != null) "shippingAddressStreet2": widget.shippingAddressStreet2,
+      if (widget.shippingAddressCity != null) "shippingAddressCity": widget.shippingAddressCity,
+      if (widget.shippingAddressStateProvince != null) "shippingAddressStateProvince": widget.shippingAddressStateProvince,
+      if (widget.shippingAddressCountry != null) "shippingAddressCountry": widget.shippingAddressCountry,
+      if (widget.shippingAddressPostcodeZip != null) "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
+    });
 
     String json = jsonEncode(requestData);
     log("JSON: $json");
@@ -228,15 +226,5 @@ class PayableIPGState extends State<PayableIPG> {
       log("Request error: ${response.statusCode}");
       throw Exception('Failed to load URL: ${response.statusCode}');
     }
-  }
-
-  Future<String> getPackageName() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.packageName;
-  }
-
-  Future<String> getVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    return packageInfo.version;
   }
 }
