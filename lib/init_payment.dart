@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:payable_ipg/return_data.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'environment.dart';
 import 'ipg_client.dart';
@@ -54,48 +55,54 @@ class PAYableIPG extends StatefulWidget {
   final String? shippingAddressCountry;
   final String? shippingAddressPostcodeZip;
 
-  const PAYableIPG({
-    super.key,
-    required this.ipgClient,
-    required this.paymentType,
-    required this.orderDescription,
-    required this.invoiceId,
-    required this.customerFirstName,
-    required this.customerLastName,
-    required this.customerMobilePhone,
-    required this.customerEmail,
-    required this.billingAddressStreet,
-    required this.billingAddressCity,
-    required this.billingAddressCountry,
-    required this.amount,
-    required this.currencyCode,
-    this.startDate,
-    this.endDate,
-    this.recurringAmount,
-    this.interval,
-    this.isRetry,
-    this.retryAttempts,
-    this.doFirstPayment,
-    this.custom1,
-    this.custom2,
-    this.customerPhone,
-    this.billingAddressStreet2,
-    this.billingCompanyName,
-    this.billingAddressPostcodeZip,
-    this.billingAddressStateProvince,
-    this.shippingContactFirstName,
-    this.shippingContactLastName,
-    this.shippingContactMobilePhone,
-    this.shippingContactPhone,
-    this.shippingContactEmail,
-    this.shippingCompanyName,
-    this.shippingAddressStreet,
-    this.shippingAddressStreet2,
-    this.shippingAddressCity,
-    this.shippingAddressStateProvince,
-    this.shippingAddressCountry,
-    this.shippingAddressPostcodeZip,
-  });
+  OnPaymentSuccess? onPaymentSuccess;
+  OnPaymentCompleted? onPaymentCompleted;
+  OnPaymentError? onPaymentError;
+
+  PAYableIPG(
+      {super.key,
+      required this.ipgClient,
+      required this.paymentType,
+      required this.orderDescription,
+      required this.invoiceId,
+      required this.customerFirstName,
+      required this.customerLastName,
+      required this.customerMobilePhone,
+      required this.customerEmail,
+      required this.billingAddressStreet,
+      required this.billingAddressCity,
+      required this.billingAddressCountry,
+      required this.amount,
+      required this.currencyCode,
+      this.startDate,
+      this.endDate,
+      this.recurringAmount,
+      this.interval,
+      this.isRetry,
+      this.retryAttempts,
+      this.doFirstPayment,
+      this.custom1,
+      this.custom2,
+      this.customerPhone,
+      this.billingAddressStreet2,
+      this.billingCompanyName,
+      this.billingAddressPostcodeZip,
+      this.billingAddressStateProvince,
+      this.shippingContactFirstName,
+      this.shippingContactLastName,
+      this.shippingContactMobilePhone,
+      this.shippingContactPhone,
+      this.shippingContactEmail,
+      this.shippingCompanyName,
+      this.shippingAddressStreet,
+      this.shippingAddressStreet2,
+      this.shippingAddressCity,
+      this.shippingAddressStateProvince,
+      this.shippingAddressCountry,
+      this.shippingAddressPostcodeZip,
+      this.onPaymentSuccess,
+      this.onPaymentCompleted,
+      this.onPaymentError});
 
   @override
   PAYableIPGState createState() => PAYableIPGState();
@@ -106,15 +113,7 @@ class PAYableIPGState extends State<PAYableIPG> {
 
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..setBackgroundColor(const Color(0x00000000))
-    ..setNavigationDelegate(
-      NavigationDelegate(
-        onProgress: (int progress) {},
-        onPageStarted: (String url) {},
-        onPageFinished: (String url) {},
-        onWebResourceError: (WebResourceError error) {},
-      ),
-    );
+    ..setBackgroundColor(const Color(0x00000000));
 
   @override
   Widget build(BuildContext context) {
@@ -193,22 +192,38 @@ class PAYableIPGState extends State<PAYableIPG> {
       if (widget.custom1 != null) "custom1": widget.custom1,
       if (widget.custom2 != null) "custom2": widget.custom2,
       if (widget.customerPhone != null) "customerPhone": widget.customerPhone,
-      if (widget.billingAddressStreet2 != null) "billingAddressStreet2": widget.billingAddressStreet2,
-      if (widget.billingCompanyName != null) "billingCompanyName": widget.billingCompanyName,
-      if (widget.billingAddressPostcodeZip != null) "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
-      if (widget.billingAddressStateProvince != null) "billingAddressStateProvince": widget.billingAddressStateProvince,
-      if (widget.shippingContactFirstName != null) "shippingContactFirstName": widget.shippingContactFirstName,
-      if (widget.shippingContactLastName != null) "shippingContactLastName": widget.shippingContactLastName,
-      if (widget.shippingContactMobilePhone != null) "shippingContactMobilePhone": widget.shippingContactMobilePhone,
-      if (widget.shippingContactPhone != null) "shippingContactPhone": widget.shippingContactPhone,
-      if (widget.shippingContactEmail != null) "shippingContactEmail": widget.shippingContactEmail,
-      if (widget.shippingCompanyName != null) "shippingCompanyName": widget.shippingCompanyName,
-      if (widget.shippingAddressStreet != null) "shippingAddressStreet": widget.shippingAddressStreet,
-      if (widget.shippingAddressStreet2 != null) "shippingAddressStreet2": widget.shippingAddressStreet2,
-      if (widget.shippingAddressCity != null) "shippingAddressCity": widget.shippingAddressCity,
-      if (widget.shippingAddressStateProvince != null) "shippingAddressStateProvince": widget.shippingAddressStateProvince,
-      if (widget.shippingAddressCountry != null) "shippingAddressCountry": widget.shippingAddressCountry,
-      if (widget.shippingAddressPostcodeZip != null) "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
+      if (widget.billingAddressStreet2 != null)
+        "billingAddressStreet2": widget.billingAddressStreet2,
+      if (widget.billingCompanyName != null)
+        "billingCompanyName": widget.billingCompanyName,
+      if (widget.billingAddressPostcodeZip != null)
+        "billingAddressPostcodeZip": widget.billingAddressPostcodeZip,
+      if (widget.billingAddressStateProvince != null)
+        "billingAddressStateProvince": widget.billingAddressStateProvince,
+      if (widget.shippingContactFirstName != null)
+        "shippingContactFirstName": widget.shippingContactFirstName,
+      if (widget.shippingContactLastName != null)
+        "shippingContactLastName": widget.shippingContactLastName,
+      if (widget.shippingContactMobilePhone != null)
+        "shippingContactMobilePhone": widget.shippingContactMobilePhone,
+      if (widget.shippingContactPhone != null)
+        "shippingContactPhone": widget.shippingContactPhone,
+      if (widget.shippingContactEmail != null)
+        "shippingContactEmail": widget.shippingContactEmail,
+      if (widget.shippingCompanyName != null)
+        "shippingCompanyName": widget.shippingCompanyName,
+      if (widget.shippingAddressStreet != null)
+        "shippingAddressStreet": widget.shippingAddressStreet,
+      if (widget.shippingAddressStreet2 != null)
+        "shippingAddressStreet2": widget.shippingAddressStreet2,
+      if (widget.shippingAddressCity != null)
+        "shippingAddressCity": widget.shippingAddressCity,
+      if (widget.shippingAddressStateProvince != null)
+        "shippingAddressStateProvince": widget.shippingAddressStateProvince,
+      if (widget.shippingAddressCountry != null)
+        "shippingAddressCountry": widget.shippingAddressCountry,
+      if (widget.shippingAddressPostcodeZip != null)
+        "shippingAddressPostcodeZip": widget.shippingAddressPostcodeZip,
     });
 
     // Prepare request
@@ -230,11 +245,40 @@ class PAYableIPGState extends State<PAYableIPG> {
       log("Request success: ${response.body}");
       setState(() {
         _responseUrl = jsonDecode(response.body)['paymentPage'];
-        controller.loadRequest(Uri.parse(_responseUrl!));
+        controller
+          /*..addJavaScriptChannel('onPaymentCompleted',
+              onMessageReceived: (message) {
+            widget.onPaymentCompleted!(message.message);
+          })
+          ..addJavaScriptChannel(
+            'onPaymentError',
+            onMessageReceived: (message) {
+              widget.onPaymentError!(message.message);
+            },
+          )*/
+          ..setNavigationDelegate(NavigationDelegate(
+              onNavigationRequest: (NavigationRequest request) {
+            log("RETURN_URL: ${request.url}");
+            if (request.url.contains(widget.ipgClient.returnUrl)) {
+              if (widget.onPaymentSuccess != null) {
+                ReturnData data = getReturnData(request.url);
+                widget.onPaymentSuccess!(data);
+                return NavigationDecision.prevent;
+              }
+            }
+            return NavigationDecision.navigate;
+          }))
+          ..loadRequest(Uri.parse(_responseUrl!));
       });
     } else {
       log("Request error: ${response.statusCode}");
-      throw Exception('Failed to load URL: ${response.statusCode}');
+      if (widget.onPaymentError != null) {
+        widget.onPaymentError!(response.body);
+      }
     }
   }
 }
+
+typedef OnPaymentSuccess = void Function(ReturnData data)?;
+typedef OnPaymentCompleted = void Function(String message)?;
+typedef OnPaymentError = void Function(String message)?;
