@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:payable_ipg/payable_ipg.dart';
-import 'package:payable_ipg/payable_ipg_client.dart';
 
 PAYableIPGClient myIpgClient = const PAYableIPGClient(
   logoUrl: "https://i.imgur.com/l21F5us.png",
   returnUrl: "https://example.com/receipt",
   merchantKey: "A748BFC24F8F6C61",
-  merchantToken: "09FD8632EED1D1FEB9AD9A5E55427452"
+  merchantToken: "09FD8632EED1D1FEB9AD9A5E55427452",
+  webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/"
 );
 
 PAYableIPG payableIPG = PAYableIPG(
