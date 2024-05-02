@@ -118,9 +118,6 @@ class PAYableIPGState extends State<PAYableIPG> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter SDK demo'),
-      ),
       body: Center(
         child: _responseUrl != null
             ? WebViewWidget(controller: controller)

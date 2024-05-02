@@ -1,38 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg_demo/checkout.dart';
+import 'package:payable_ipg_demo/contact_details.dart';
+import 'package:payable_ipg_demo/pages.dart';
+import 'package:payable_ipg_demo/settings.dart';
 
-PAYableIPGClient myIpgClient = const PAYableIPGClient(
-  logoUrl: "https://i.imgur.com/l21F5us.png",
-  returnUrl: "https://example.com/receipt",
-  merchantKey: "A748BFC24F8F6C61",
-  merchantToken: "09FD8632EED1D1FEB9AD9A5E55427452",
-  webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/"
-);
+import 'home.dart';
 
-PAYableIPG payableIPG = PAYableIPG(
-  ipgClient: myIpgClient,
-  paymentType: "1",
-  orderDescription: "Order description goes here",
-  invoiceId: "645855868",
-  customerFirstName: "Tashila",
-  customerLastName: "Pathum",
-  customerMobilePhone: "0770507499",
-  customerEmail: "tashila.payable@gmail.com",
-  billingAddressStreet: "Hill Street",
-  billingAddressCity: "Colombo",
-  billingAddressCountry: "LK",
-  billingAddressPostcodeZip: "0000",
-  amount: "100.00",
-  currencyCode: "LKR",
-);
+//4508750015741019
 
 void main() {
   runApp(
     MaterialApp(
+      title: 'Payable IPG Demo',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: payableIPG,
-      ),
+      initialRoute: Pages.home,
+      routes: {
+        Pages.home: (context) => const HomePage(),
+        Pages.settings: (context) => const SettingsPage(),
+        Pages.checkout: (context) => const CheckoutPage(),
+        Pages.contactDetails: (context) => const ContactDetailsPage(),
+      },
     ),
   );
 }
