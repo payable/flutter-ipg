@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -105,7 +105,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 ElevatedButton(
                   onPressed: () {
                     _saveSettings();
-                    Fluttertoast.showToast(msg: "Saved");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Saved'))
+                    );
                     Navigator.pop(context);
                   },
                   child: const Text('Save'),

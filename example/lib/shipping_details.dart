@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/instance_manager.dart';
 
-class ContactDetailsPage extends StatefulWidget {
-  const ContactDetailsPage({super.key});
+import 'form_data.dart';
+
+class ShippingDetailsPage extends StatefulWidget {
+  const ShippingDetailsPage({super.key});
 
   @override
-  State<ContactDetailsPage> createState() => _ContactDetailsPageState();
+  State<ShippingDetailsPage> createState() => _ShippingDetailsPageState();
 }
 
-class _ContactDetailsPageState extends State<ContactDetailsPage> {
+class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -22,13 +25,11 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
   final _countryController = TextEditingController();
   final _postcodeController = TextEditingController();
 
-  bool _shipToDifferentAddress = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Billing address'),
+        title: const Text('Shipping address'),
       ),
       body: Form(
         key: _formKey,
@@ -38,26 +39,16 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: Column(
               children: [
                 _buildBillingAddressSection(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-                  child: CheckboxListTile(
-                      title: const Text('Ship to a different address?'),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: _shipToDifferentAddress,
-                      onChanged: (value) =>
-                        setState(() => _shipToDifferentAddress = value!)
-                  ),
-                ),
-                if (_shipToDifferentAddress) _buildBillingAddressSection(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Process checkout data
-                      }
-                    },
-                    child: const Text('Checkout'),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _storeFormData();
+                      },
+                      child: const Text('Next'),
+                    ),
                   ),
                 ),
               ],
@@ -76,11 +67,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _firstNameController,
               decoration: const InputDecoration(
-                labelText: 'First Name*',
+                labelText: 'First Name',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your first name' : null,
             ),
           ),
           const SizedBox(width: 16.0),
@@ -88,11 +77,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _lastNameController,
               decoration: const InputDecoration(
-                labelText: 'Last Name*',
+                labelText: 'Last Name',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your last name' : null,
             ),
           ),
         ],
@@ -104,11 +91,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _mobileController,
               decoration: const InputDecoration(
-                labelText: 'Mobile*',
+                labelText: 'Mobile',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your mobile number' : null,
               keyboardType: TextInputType.phone,
             ),
           ),
@@ -129,11 +114,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
       TextFormField(
         controller: _emailController,
         decoration: const InputDecoration(
-          labelText: 'Email Address*',
+          labelText: 'Email Address',
           border: OutlineInputBorder(),
         ),
-        validator: (value) =>
-            value!.isEmpty ? 'Please enter your email address' : null,
         keyboardType: TextInputType.emailAddress,
       ),
       const SizedBox(height: 16.0),
@@ -151,11 +134,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _street1Controller,
               decoration: const InputDecoration(
-                labelText: 'Street Address 1*',
+                labelText: 'Street Address 1',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your street address' : null,
             ),
           ),
           const SizedBox(width: 16.0),
@@ -177,11 +158,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _townCityController,
               decoration: const InputDecoration(
-                labelText: 'Town/City*',
+                labelText: 'Town/City',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your town/city' : null,
             ),
           ),
           const SizedBox(width: 16.0),
@@ -203,11 +182,9 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
             child: TextFormField(
               controller: _countryController,
               decoration: const InputDecoration(
-                labelText: 'Country*',
+                labelText: 'Country',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter your country' : null,
             ),
           ),
           const SizedBox(width: 16.0),
@@ -223,5 +200,21 @@ class _ContactDetailsPageState extends State<ContactDetailsPage> {
         ],
       ),
     ]);
+  }
+
+  void _storeFormData() {
+    CheckoutFormData cfd = Get.find();
+    cfd.shippingFirstName = _firstNameController.value.text;
+    cfd.shippingLastName = _lastNameController.value.text;
+    cfd.shippingMobile = _mobileController.value.text;
+    cfd.shippingPhone = _phoneController.value.text;
+    cfd.shippingEmail = _emailController.value.text;
+    cfd.shippingCompanyName = _companyNameController.value.text;
+    cfd.shippingStreetAddress1 = _street1Controller.value.text;
+    cfd.shippingStreetAddress2 = _street2Controller.value.text;
+    cfd.shippingTownCity = _townCityController.value.text;
+    cfd.shippingProvince = _provinceController.value.text;
+    cfd.shippingCountry = _countryController.value.text;
+    cfd.shippingPostcode = _postcodeController.value.text;
   }
 }

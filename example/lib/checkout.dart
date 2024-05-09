@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:payable_ipg_demo/form_data.dart';
 import 'package:payable_ipg_demo/pages.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -9,11 +13,11 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  String? _amount;
-  String? _currency;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    CheckoutFormData formData = Get.put(CheckoutFormData());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Check - Out'),
@@ -26,15 +30,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Enter total amount*',
-                      border: OutlineInputBorder(),
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Enter total amount*',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (String value) {
+                        formData.amount = value;
+                      },
+                      keyboardType: TextInputType.number,
+                      validator: (value) => value!.isEmpty ? 'Required' : null,
                     ),
-                    onChanged: (String value) {
-                      _amount = value;
-                    },
-                    keyboardType: TextInputType.number,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -42,9 +50,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   initialSelection: 'LKR',
                   label: const Text('Currency'),
                   onSelected: (String? currency) {
-                    setState(() {
-                      _currency = currency;
-                    });
+                    formData.currency = currency;
                   },
                   dropdownMenuEntries: const [
                     DropdownMenuEntry<String>(
@@ -74,8 +80,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Pages.contactDetails);
-                  },
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.pushNamed(context, Pages.billingDetails);
+                  }
+                },
                 child: const Text('Checkout'),
               ),
             ),

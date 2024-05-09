@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
                   child: const Text(
-                    '      Settings      ',
+                    '      Settings      ', // ugly
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {

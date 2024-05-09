@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.0.15
-  fluttertoast: ^8.2.5
+  get: ^4.6.6
   payable_ipg:
     path: ../
 
