@@ -32,82 +32,84 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
       appBar: AppBar(
         title: const Text('Payment details'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      const Text('Amount'),
-                      Row(
-                        children: [
-                          Text(
-                            double.parse(cfd.amount!).toStringAsFixed(2),
-                            style: const TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        const Text('Amount'),
+                        Row(
+                          children: [
+                            Text(
+                              double.parse(cfd.amount!).toStringAsFixed(2),
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            cfd.currency!,
-                            style: const TextStyle(
-                              fontSize: 24.0,
+                            const SizedBox(width: 5.0),
+                            Text(
+                              cfd.currency!,
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  DropdownMenu<String>(
-                    initialSelection: '1',
-                    label: const Text('Payment type'),
-                    controller: _paymentTypeController,
-                    onSelected: (String? type) {
-                      setState(() {
-                        _isRecurring = type == '2';
-                      });
-                    },
-                    dropdownMenuEntries: const [
-                      DropdownMenuEntry<String>(
-                        value: '1',
-                        label: 'One time',
-                      ),
-                      DropdownMenuEntry<String>(
-                        value: '2',
-                        label: 'Recurring',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              if (_isRecurring) _showRecurringPaymentFields(),
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_isRecurring) {
-                        if (_formKey.currentState!.validate()) {
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    DropdownMenu<String>(
+                      initialSelection: '1',
+                      label: const Text('Payment type'),
+                      controller: _paymentTypeController,
+                      onSelected: (String? type) {
+                        setState(() {
+                          _isRecurring = type == '2';
+                        });
+                      },
+                      dropdownMenuEntries: const [
+                        DropdownMenuEntry<String>(
+                          value: '1',
+                          label: 'One time',
+                        ),
+                        DropdownMenuEntry<String>(
+                          value: '2',
+                          label: 'Recurring',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                if (_isRecurring) _showRecurringPaymentFields(),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_isRecurring) {
+                          if (_formKey.currentState!.validate()) {
+                            _storeFormData();
+                            Navigator.pushNamed(context, Pages.pay);
+                          }
+                        } else {
                           _storeFormData();
                           Navigator.pushNamed(context, Pages.pay);
                         }
-                      } else {
-                        _storeFormData();
-                        Navigator.pushNamed(context, Pages.pay);
-                      }
-                    },
-                    child: const Text('Pay'),
+                      },
+                      child: const Text('Pay'),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -144,7 +146,6 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                     labelText: 'End date*',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Required' : null,
                   onTap: () {
                     FocusScope.of(context).requestFocus(FocusNode());
                     _selectDate(context, false);
@@ -200,15 +201,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                     labelText: 'Is retry*',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value!.isEmpty){
-                      return 'Required';
-                    } else if (value != '1' || value != '0') {
-                      return 'Invalid';
-                    } else {
-                      return null;
-                    }
-                  },
+                  validator: _isValue01,
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -220,15 +213,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                     labelText: 'Retry attempts*',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value!.isEmpty){
-                      return 'Required';
-                    } else if (value != '1' || value != '0') {
-                      return 'Invalid';
-                    } else {
-                      return null;
-                    }
-                  },
+                  validator: _isValue01,
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -274,10 +259,10 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
   String? _isValue01(String? value) {
     if (value!.isEmpty){
       return 'Required';
-    } else if (value != '1' || value != '0') {
-      return 'Invalid';
-    } else {
+    } else if (value == '1' || value == '0') {
       return null;
+    } else {
+      return 'Invalid';
     }
   }
 
@@ -286,12 +271,12 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
     cfd.paymentType = _isRecurring ? 2 : 1;
     if (_isRecurring) {
       cfd.startDate = _startDateController.text;
-      cfd.endDate = _endDateController.text;
-      cfd.recurringAmount = _recurringAmountController.text;
-      cfd.interval = _intervalController.text.capitalize;
-      cfd.isRetry = int.parse(_isRetryController.text);
-      cfd.retryAttempts = int.parse(_retryAttemptsController.text);
-      cfd.doFirstPayment = int.parse(_doFirstPaymentController.text);
+      cfd.endDate = _endDateController.text.isNotEmpty ? _endDateController.text : 'FOREVER';
+      cfd.recurringAmount = double.parse(_recurringAmountController.text).toStringAsFixed(2);
+      cfd.interval = _intervalController.text.toUpperCase();
+      cfd.isRetry = _isRetryController.text;
+      cfd.retryAttempts = _retryAttemptsController.text;
+      cfd.doFirstPayment = _doFirstPaymentController.text;
     }
   }
 }

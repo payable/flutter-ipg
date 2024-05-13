@@ -30,9 +30,9 @@ class PAYableIPG extends StatefulWidget {
   final String? endDate;
   final String? recurringAmount;
   final String? interval;
-  final int? isRetry;
-  final int? retryAttempts;
-  final int? doFirstPayment;
+  final String? isRetry;
+  final String? retryAttempts;
+  final String? doFirstPayment;
 
   // Optional params
   final String? custom1;

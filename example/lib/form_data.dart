@@ -2,6 +2,9 @@ class CheckoutFormData {
   // checkout
   String? amount;
   String? currency;
+  String? orderDescription;
+  String? custom1;
+  String? custom2;
 
   // billing details
   String? billingFirstName;
@@ -37,13 +40,16 @@ class CheckoutFormData {
   String? endDate;
   String? recurringAmount;
   String? interval;
-  int? isRetry = 0;
-  int? retryAttempts = 0;
-  int? doFirstPayment = 0;
+  String? isRetry = '0';
+  String? retryAttempts = '0';
+  String? doFirstPayment = '0';
 
   CheckoutFormData({
     this.amount,
     this.currency,
+    this.orderDescription,
+    this.custom1,
+    this.custom2,
     this.billingFirstName,
     this.billingLastName,
     this.billingMobile,

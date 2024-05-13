@@ -80,6 +80,7 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
   Widget _buildBillingAddressSection() {
     return Column(children: [
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -106,6 +107,7 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -151,6 +153,7 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -176,6 +179,7 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -201,6 +205,7 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -217,9 +222,11 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
             child: TextFormField(
               controller: _postcodeController,
               decoration: const InputDecoration(
-                labelText: 'Post code',
+                labelText: 'Post code*',
                 border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.number,
+              validator: (value) => value!.isEmpty ? 'Required' : null,
             ),
           ),
         ],

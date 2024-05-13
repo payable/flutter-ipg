@@ -64,6 +64,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
   Widget _buildBillingAddressSection() {
     return Column(children: [
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -88,6 +89,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -131,6 +133,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -155,6 +158,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(
@@ -179,6 +183,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
       ),
       const SizedBox(height: 16.0),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: TextFormField(

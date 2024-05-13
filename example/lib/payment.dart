@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:payable_ipg/payable_ipg.dart';
@@ -55,8 +57,8 @@ class _PaymentPageState extends State<PaymentPage> {
       payableIPG =  PAYableIPG(
         ipgClient: myIpgClient!,
         paymentType: form.paymentType,
-        orderDescription: "Order description goes here",
-        invoiceId: "7e81374801",
+        orderDescription: form.orderDescription!,
+        invoiceId: getInvoiceId(),
         customerFirstName: form.billingFirstName!,
         customerLastName: form.billingLastName!,
         customerMobilePhone: form.billingMobile!,
@@ -67,8 +69,8 @@ class _PaymentPageState extends State<PaymentPage> {
         billingAddressPostcodeZip: form.billingPostcode,
         amount: double.parse(form.amount!).toStringAsFixed(2),
         currencyCode: form.currency!,
-        custom1: '',
-        custom2: '',
+        custom1: form.custom1,
+        custom2: form.custom2,
         customerPhone: form.billingPhone,
         billingAddressStreet2: form.billingStreetAddress2,
         billingCompanyName: form.billingCompanyName,
@@ -94,5 +96,12 @@ class _PaymentPageState extends State<PaymentPage> {
         doFirstPayment: form.doFirstPayment,
       );
     });
+  }
+
+  String getInvoiceId() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return String.fromCharCodes(
+        List.generate(8, (index) => chars.codeUnitAt(Random().nextInt(chars.length)))
+    );
   }
 }
