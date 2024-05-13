@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,12 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     _loadData();
+    payableIPG?.onPaymentSuccess = (data) {
+      log('Payment success: ${data.statusIndicator}');
+      Navigator.popUntil(context, (route) => route.isFirst);
+    };
     payableIPG?.onPaymentError = (message) {
+      log('Payment error: $message');
       setState(() {
         errorMessage = message;
       });
@@ -51,7 +57,8 @@ class _PaymentPageState extends State<PaymentPage> {
           returnUrl: prefs.getString('notificationUrl') ?? '',
           merchantKey: prefs.getString('merchantKey') ?? '',
           merchantToken: prefs.getString('merchantToken') ?? '',
-          webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/"
+          webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/",
+          environment: IPGEnvironment.sandbox
       );
 
       payableIPG =  PAYableIPG(
@@ -67,7 +74,7 @@ class _PaymentPageState extends State<PaymentPage> {
         billingAddressCity: form.billingTownCity!,
         billingAddressCountry: form.billingCountry!,
         billingAddressPostcodeZip: form.billingPostcode,
-        amount: double.parse(form.amount!).toStringAsFixed(2),
+        amount: form.amount!,
         currencyCode: form.currency!,
         custom1: form.custom1,
         custom2: form.custom2,
@@ -101,7 +108,7 @@ class _PaymentPageState extends State<PaymentPage> {
   String getInvoiceId() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     return String.fromCharCodes(
-        List.generate(8, (index) => chars.codeUnitAt(Random().nextInt(chars.length)))
+        List.generate(8, (index) => chars.codeUnitAt(math.Random().nextInt(chars.length)))
     );
   }
 }

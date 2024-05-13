@@ -12,7 +12,7 @@ class PAYableIPG extends StatefulWidget {
   final PAYableIPGClient ipgClient;
 
   // Required params for any payment
-  final String orderDescription;
+  final String? orderDescription;
   final String invoiceId;
   final String customerFirstName;
   final String customerLastName;
@@ -56,7 +56,6 @@ class PAYableIPG extends StatefulWidget {
   final String? shippingAddressPostcodeZip;
 
   OnPaymentSuccess? onPaymentSuccess;
-  OnPaymentCompleted? onPaymentCompleted;
   OnPaymentError? onPaymentError;
 
   PAYableIPG(
@@ -101,7 +100,6 @@ class PAYableIPG extends StatefulWidget {
       this.shippingAddressCountry,
       this.shippingAddressPostcodeZip,
       this.onPaymentSuccess,
-      this.onPaymentCompleted,
       this.onPaymentError});
 
   @override
@@ -157,7 +155,8 @@ class PAYableIPGState extends State<PAYableIPG> {
           currencyCode: widget.currencyCode),
 
       // Required params for all payments
-      "orderDescription": widget.orderDescription,
+      "orderDescription": (widget.orderDescription != null && widget.orderDescription!.isNotEmpty)?
+      widget.orderDescription : 'Order from Payable Mobile Payment',
       "invoiceId": widget.invoiceId,
       "customerFirstName": widget.customerFirstName,
       "customerLastName": widget.customerLastName,
@@ -243,19 +242,8 @@ class PAYableIPGState extends State<PAYableIPG> {
       setState(() {
         _responseUrl = jsonDecode(response.body)['paymentPage'];
         controller
-          /*..addJavaScriptChannel('onPaymentCompleted',
-              onMessageReceived: (message) {
-            widget.onPaymentCompleted!(message.message);
-          })
-          ..addJavaScriptChannel(
-            'onPaymentError',
-            onMessageReceived: (message) {
-              widget.onPaymentError!(message.message);
-            },
-          )*/
           ..setNavigationDelegate(NavigationDelegate(
               onNavigationRequest: (NavigationRequest request) {
-            log("RETURN_URL: ${request.url}");
             if (request.url.contains(widget.ipgClient.returnUrl)) {
               if (widget.onPaymentSuccess != null) {
                 ReturnData data = getReturnData(request.url);
@@ -277,5 +265,4 @@ class PAYableIPGState extends State<PAYableIPG> {
 }
 
 typedef OnPaymentSuccess = void Function(ReturnData data)?;
-typedef OnPaymentCompleted = void Function(String message)?;
 typedef OnPaymentError = void Function(String message)?;

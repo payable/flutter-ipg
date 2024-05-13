@@ -47,7 +47,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                         Row(
                           children: [
                             Text(
-                              double.parse(cfd.amount!).toStringAsFixed(2),
+                              cfd.amount!,
                               style: const TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
