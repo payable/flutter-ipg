@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:payable_ipg_demo/checkout.dart';
-import 'package:payable_ipg_demo/billing_details.dart';
+import 'package:payable_ipg_demo/forms/checkout.dart';
+import 'package:payable_ipg_demo/forms/billing_details.dart';
+import 'package:payable_ipg_demo/forms/payment_details.dart';
 import 'package:payable_ipg_demo/pages.dart';
+import 'package:payable_ipg_demo/payment.dart';
 import 'package:payable_ipg_demo/settings.dart';
-import 'package:payable_ipg_demo/shipping_details.dart';
+import 'package:payable_ipg_demo/forms/shipping_details.dart';
 import 'home.dart';
 
 //4508750015741019
@@ -20,6 +22,8 @@ void main() {
         Pages.checkout: (context) => const CheckoutPage(),
         Pages.billingDetails: (context) => const BillingDetailsPage(),
         Pages.shippingDetails: (context) => const ShippingDetailsPage(),
+        Pages.paymentDetails: (context) => const PaymentDetailsPage(),
+        Pages.pay: (context) => const PaymentPage(),
       },
     ),
   );

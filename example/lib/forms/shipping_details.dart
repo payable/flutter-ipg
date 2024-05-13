@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 
-import 'form_data.dart';
+import '../form_data.dart';
+import '../pages.dart';
 
 class ShippingDetailsPage extends StatefulWidget {
   const ShippingDetailsPage({super.key});
@@ -46,6 +47,7 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         _storeFormData();
+                        Navigator.of(context).pushNamed(Pages.paymentDetails);
                       },
                       child: const Text('Next'),
                     ),

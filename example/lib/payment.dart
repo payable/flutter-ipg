@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg_demo/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'error_dialog.dart';
@@ -39,6 +41,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
+    CheckoutFormData form = Get.find();
 
     setState(() {
       myIpgClient = PAYableIPGClient(
@@ -51,19 +54,44 @@ class _PaymentPageState extends State<PaymentPage> {
 
       payableIPG =  PAYableIPG(
         ipgClient: myIpgClient!,
-        paymentType: "1",
+        paymentType: form.paymentType,
         orderDescription: "Order description goes here",
         invoiceId: "7e81374801",
-        customerFirstName: "Tashila",
-        customerLastName: "Pathum",
-        customerMobilePhone: "0770507499",
-        customerEmail: "tashila.payable@gmail.com",
-        billingAddressStreet: "Hill Street",
-        billingAddressCity: "Colombo",
-        billingAddressCountry: "LK",
-        billingAddressPostcodeZip: "0000",
-        amount: "200.00",
-        currencyCode: "LKR",
+        customerFirstName: form.billingFirstName!,
+        customerLastName: form.billingLastName!,
+        customerMobilePhone: form.billingMobile!,
+        customerEmail: form.billingEmail!,
+        billingAddressStreet: form.billingStreetAddress1!,
+        billingAddressCity: form.billingTownCity!,
+        billingAddressCountry: form.billingCountry!,
+        billingAddressPostcodeZip: form.billingPostcode,
+        amount: double.parse(form.amount!).toStringAsFixed(2),
+        currencyCode: form.currency!,
+        custom1: '',
+        custom2: '',
+        customerPhone: form.billingPhone,
+        billingAddressStreet2: form.billingStreetAddress2,
+        billingCompanyName: form.billingCompanyName,
+        billingAddressStateProvince: form.billingProvince,
+        shippingContactFirstName: form.shippingFirstName,
+        shippingContactLastName: form.shippingLastName,
+        shippingContactMobilePhone: form.shippingMobile,
+        shippingContactPhone: form.shippingPhone,
+        shippingContactEmail: form.shippingEmail,
+        shippingCompanyName: form.billingCompanyName,
+        shippingAddressStreet: form.shippingStreetAddress1,
+        shippingAddressStreet2: form.shippingStreetAddress2,
+        shippingAddressCity: form.shippingTownCity,
+        shippingAddressStateProvince: form.shippingTownCity,
+        shippingAddressCountry: form.shippingCountry,
+        shippingAddressPostcodeZip: form.shippingPostcode,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        recurringAmount: form.recurringAmount,
+        interval: form.interval,
+        isRetry: form.isRetry,
+        retryAttempts: form.retryAttempts,
+        doFirstPayment: form.doFirstPayment,
       );
     });
   }

@@ -14,7 +14,6 @@ class PAYableIPG extends StatefulWidget {
   // Required params for any payment
   final String orderDescription;
   final String invoiceId;
-  final String paymentType;
   final String customerFirstName;
   final String customerLastName;
   final String customerMobilePhone;
@@ -26,13 +25,14 @@ class PAYableIPG extends StatefulWidget {
   final String currencyCode;
 
   // Required params only for recurring payments when paymentType is 2
+  final int paymentType;
   final String? startDate;
   final String? endDate;
   final String? recurringAmount;
   final String? interval;
-  final String? isRetry;
-  final String? retryAttempts;
-  final String? doFirstPayment;
+  final int? isRetry;
+  final int? retryAttempts;
+  final int? doFirstPayment;
 
   // Optional params
   final String? custom1;
@@ -172,7 +172,7 @@ class PAYableIPGState extends State<PAYableIPG> {
     };
 
     // Required params for recurring payments only
-    if (widget.paymentType == "2") {
+    if (widget.paymentType == 2) {
       requestData.addAll({
         "startDate": widget.startDate,
         "endDate": widget.endDate,

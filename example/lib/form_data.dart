@@ -32,14 +32,14 @@ class CheckoutFormData {
   String? shippingPostcode;
 
   // recurring payments
-  String paymentType;
+  int paymentType;
   String? startDate;
   String? endDate;
   String? recurringAmount;
   String? interval;
-  int? isRetry;
-  int? retryAttempt;
-  int? doFirstPayment;
+  int? isRetry = 0;
+  int? retryAttempts = 0;
+  int? doFirstPayment = 0;
 
   CheckoutFormData({
     this.amount,
@@ -68,13 +68,13 @@ class CheckoutFormData {
     this.shippingProvince,
     this.shippingCountry,
     this.shippingPostcode,
-    this.paymentType = 'ONE_TIME_PAYMENT',
+    this.paymentType = 1,
     this.startDate,
     this.endDate,
     this.recurringAmount,
     this.interval,
     this.isRetry,
-    this.retryAttempt,
+    this.retryAttempts,
     this.doFirstPayment
   });
 }

@@ -34,10 +34,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.0.15
-  get: ^4.6.6
+
+  # Add the relative path of the IPG SDK
   payable_ipg:
     path: ../
+
+  # Other dependencies
+  shared_preferences: ^2.0.15 # To store merchant settings
+  get: ^4.6.6 # To share input values between form pages
 
 dev_dependencies:
   flutter_test:

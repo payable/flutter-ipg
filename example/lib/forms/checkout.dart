@@ -18,6 +18,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     CheckoutFormData formData = Get.put(CheckoutFormData());
+    formData.currency = 'LKR';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Check - Out'),
