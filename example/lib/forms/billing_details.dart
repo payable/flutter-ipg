@@ -1,3 +1,4 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:payable_ipg_demo/form_data.dart';
@@ -215,6 +216,12 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
                 border: OutlineInputBorder(),
               ),
               validator: (value) => value!.isEmpty ? 'Required' : null,
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                showCountryPicker(context: context, onSelect: (Country country) {
+                  _countryController.text = country.countryCode;
+                });
+              },
             ),
           ),
           const SizedBox(width: 16.0),
