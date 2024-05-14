@@ -172,12 +172,17 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
               Flexible(
                 child: DropdownMenu<String>(
                   controller: _intervalController,
-                  initialSelection: 'MONTHLY',
+                  initialSelection: 'DAILY',
                   label: const Text('Interval*'),
-                  onSelected: (String? interval) {
-                    //todo
-                  },
                   dropdownMenuEntries: const [
+                    DropdownMenuEntry<String>(
+                      value: 'DAILY',
+                      label: 'Daily',
+                    ),
+                    DropdownMenuEntry<String>(
+                      value: 'WEEKLY',
+                      label: 'Weekly',
+                    ),
                     DropdownMenuEntry<String>(
                       value: 'MONTHLY',
                       label: 'Monthly',
