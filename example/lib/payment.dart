@@ -54,10 +54,10 @@ class _PaymentPageState extends State<PaymentPage> {
     setState(() {
       myIpgClient = PAYableIPGClient(
           logoUrl: prefs.getString('logoUrl') ?? '',
-          returnUrl: prefs.getString('notificationUrl') ?? '',
+          returnUrl: 'https://com.example.payable_ipg_example',
           merchantKey: prefs.getString('merchantKey') ?? '',
           merchantToken: prefs.getString('merchantToken') ?? '',
-          webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/",
+          webhookUrl: prefs.getString('notificationUrl') ?? '',
           environment: IPGEnvironment.sandbox
       );
 
