@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:payable_ipg/return_data.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'Payment_data.dart';
 import 'environment.dart';
 import 'ipg_client.dart';
 import 'utils.dart';
@@ -55,7 +56,8 @@ class PAYableIPG extends StatefulWidget {
   final String? shippingAddressCountry;
   final String? shippingAddressPostcodeZip;
 
-  OnPaymentSuccess? onPaymentSuccess;
+  OnPaymentStarted? onPaymentStarted;
+  OnPaymentCompleted? onPaymentCompleted;
   OnPaymentError? onPaymentError;
 
   PAYableIPG(
@@ -99,7 +101,7 @@ class PAYableIPG extends StatefulWidget {
       this.shippingAddressStateProvince,
       this.shippingAddressCountry,
       this.shippingAddressPostcodeZip,
-      this.onPaymentSuccess,
+      this.onPaymentCompleted,
       this.onPaymentError});
 
   @override
@@ -239,15 +241,19 @@ class PAYableIPGState extends State<PAYableIPG> {
     // Get response
     if (response.statusCode == 200) {
       log("Request success: ${response.body}");
+      final paymentData = PaymentData.fromJson(response.body);
+      if (widget.onPaymentStarted != null) {
+        widget.onPaymentStarted!(paymentData);
+      }
       setState(() {
-        _responseUrl = jsonDecode(response.body)['paymentPage'];
+        _responseUrl = paymentData.paymentPage;
         controller
           ..setNavigationDelegate(NavigationDelegate(
               onNavigationRequest: (NavigationRequest request) {
             if (request.url.contains(widget.ipgClient.returnUrl)) {
-              if (widget.onPaymentSuccess != null) {
+              if (widget.onPaymentCompleted != null) {
                 ReturnData data = getReturnData(request.url);
-                widget.onPaymentSuccess!(data);
+                widget.onPaymentCompleted!(data);
                 return NavigationDecision.prevent;
               }
             }
@@ -264,5 +270,6 @@ class PAYableIPGState extends State<PAYableIPG> {
   }
 }
 
-typedef OnPaymentSuccess = void Function(ReturnData data)?;
+typedef OnPaymentStarted = void Function(PaymentData data)?;
+typedef OnPaymentCompleted = void Function(ReturnData data)?;
 typedef OnPaymentError = void Function(String message)?;

@@ -17,21 +17,24 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  String? errorMessage;
-  PAYableIPGClient? myIpgClient;
-  PAYableIPG? payableIPG;
+  String? _errorMessage;
+  PAYableIPGClient? _myIpgClient;
+  PAYableIPG? _payableIPG;
 
   @override
   Widget build(BuildContext context) {
     _loadData();
-    payableIPG?.onPaymentSuccess = (data) {
-      log('Payment success: ${data.statusIndicator}');
+    _payableIPG?.onPaymentStarted = (data) {
+      log('Payment started');
+    };
+    _payableIPG?.onPaymentCompleted = (data) {
+      log('Payment completed');
       Navigator.popUntil(context, (route) => route.isFirst);
     };
-    payableIPG?.onPaymentError = (message) {
+    _payableIPG?.onPaymentError = (message) {
       log('Payment error: $message');
       setState(() {
-        errorMessage = message;
+        _errorMessage = message;
       });
     };
     return Scaffold(
@@ -40,8 +43,8 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       body: Stack(
         children: [
-          if (payableIPG != null) payableIPG!,
-          if (errorMessage != null) ErrorDialog(errorMessage: errorMessage!),
+          if (_payableIPG != null) _payableIPG!,
+          if (_errorMessage != null) ErrorDialog(errorMessage: _errorMessage!),
         ],
       ),
     );
@@ -52,7 +55,7 @@ class _PaymentPageState extends State<PaymentPage> {
     CheckoutFormData form = Get.find();
 
     setState(() {
-      myIpgClient = PAYableIPGClient(
+      _myIpgClient = PAYableIPGClient(
           logoUrl: prefs.getString('logoUrl') ?? '',
           returnUrl: 'https://com.example.payable_ipg_example',
           merchantKey: prefs.getString('merchantKey') ?? '',
@@ -61,11 +64,11 @@ class _PaymentPageState extends State<PaymentPage> {
           environment: IPGEnvironment.sandbox
       );
 
-      payableIPG =  PAYableIPG(
-        ipgClient: myIpgClient!,
+      _payableIPG =  PAYableIPG(
+        ipgClient: _myIpgClient!,
         paymentType: form.paymentType,
         orderDescription: form.orderDescription!,
-        invoiceId: getInvoiceId(),
+        invoiceId: _getInvoiceId(),
         customerFirstName: form.billingFirstName!,
         customerLastName: form.billingLastName!,
         customerMobilePhone: form.billingMobile!,
@@ -105,7 +108,7 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
-  String getInvoiceId() {
+  String _getInvoiceId() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     return String.fromCharCodes(
         List.generate(8, (index) => chars.codeUnitAt(math.Random().nextInt(chars.length)))
