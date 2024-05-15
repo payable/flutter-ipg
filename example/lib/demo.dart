@@ -8,8 +8,6 @@ import 'package:payable_ipg_demo/settings.dart';
 import 'package:payable_ipg_demo/forms/shipping_details.dart';
 import 'home.dart';
 
-//4508750015741019
-
 void main() {
   runApp(
     MaterialApp(
