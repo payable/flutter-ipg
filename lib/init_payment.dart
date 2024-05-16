@@ -26,13 +26,18 @@ class PAYableIPG extends StatefulWidget {
   final String currencyCode;
 
   // Required params only for recurring payments when paymentType is 2
+  /// The value is 1 for one-time payments and 2 for recurring payments
   final int paymentType;
   final String? startDate;
   final String? endDate;
   final String? recurringAmount;
   final String? interval;
+  /// Sets whether automatic retying is allowed in case of a payment fails.
+  /// 1 - allowed, 0 - not allowed
   final String? isRetry;
+  /// Sets the amount of days that automatic retrying will be performed.
   final String? retryAttempts;
+  /// Sets whether the user is making a payment in addition to the recurring amount.
   final String? doFirstPayment;
 
   // Optional params
@@ -56,10 +61,15 @@ class PAYableIPG extends StatefulWidget {
   final String? shippingAddressCountry;
   final String? shippingAddressPostcodeZip;
 
+  /// Called when the payment page loads after a successful request. The values
+  /// of [PaymentData] can be used to check the payment status later.
   OnPaymentStarted? onPaymentStarted;
+  /// Called when the [WebViewWidget] attempts to load the [returnUrl] after a user has completed a payment.
   OnPaymentCompleted? onPaymentCompleted;
+  /// Called if an error occurs while the user is any point of making a payment.
   OnPaymentError? onPaymentError;
 
+  /// Returns a [WebViewWidget] for the payment process.
   PAYableIPG(
       {super.key,
       required this.ipgClient,
