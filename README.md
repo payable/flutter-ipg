@@ -5,7 +5,6 @@
 Flutter Package - [flutter-ipg.payable.lk](https://flutter-ipg.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
 
 [![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg)
-[![Build Status](https://travis-ci.com/payable/flutter-ipg.svg?branch=master)](https://travis-ci.com/payable/flutter-ipg)
 
 <hr/>
 
@@ -16,7 +15,7 @@ Flutter Package - [flutter-ipg.payable.lk](https://flutter-ipg.payable.lk) | [Cr
 ```gradle
 android {
     defaultConfig {
-        minSdkVersion 20
+        minSdkVersion 21
     }
 }
 ```
@@ -24,7 +23,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^1.1.1
+payable_ipg: ^2.0.0
 ```
 
 <hr/>
@@ -43,9 +42,9 @@ import 'package:payable_ipg/payable_ipg.dart';
 PAYableIPGClient ipgClient = PAYableIPGClient(
     merchantKey: "YOUR_MERCHANT_KEY",
     merchantToken: "YOUR_MERCHANT_TOKEN",
-    refererUrl: "YOUR_REQUEST_URL",
+    returnUrl: "YOUR_RETURN_URL_TO_REDIRECT",
     logoUrl: "YOUR_COMPANY_LOGO",
-    environment: IPGEnvironment.sandbox, // optional
+    environment: IPGEnvironment.sandbox, // only for testing
 );
 ```
 
@@ -64,20 +63,11 @@ PAYableIPG(
     billingAddressStreet: "Hill Street",
     billingAddressCity: "Dehiwala",
     billingAddressCountry: "LK",
-    billingAddressPostcodeZip: "10350",
-    onPaymentCompleted: (data) {
-      print("onPaymentCompleted: $data");
-    },
-    onPaymentCancelled: () {
-      print("onPaymentCancelled");
-    },
-    onPaymentError: (data) {
-      print("onPaymentError: $data");
-    },
+    billingAddressPostcodeZip: "10350"
 )
 ```
 
-> Shipping details and notification URL are optional.
+> Shipping details are optional. Rest of the fields are only applicable for recurring payments.
 
 <hr/>
 
@@ -87,74 +77,70 @@ PAYableIPG(
 import 'package:flutter/material.dart';
 import 'package:payable_ipg/payable_ipg.dart';
 
-void main() {
-  
-  PAYableIPGClient ipgClient = PAYableIPGClient(
-    merchantKey: "YOUR_MERCHANT_KEY",
-    merchantToken: "YOUR_MERCHANT_TOKEN",
-    refererUrl: "YOUR_REQUEST_URL",
-    logoUrl: "YOUR_COMPANY_LOGO",
-    environment: IPGEnvironment.sandbox,
-  );
+class _PaymentPageState extends State<PaymentPage> {
+  PAYableIPGClient? _myIpgClient;
+  PAYableIPG? _payableIPG;
 
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("PAYable IPG Demo"),
-        ),
-        body: PAYableIPG(
-          ipgClient: ipgClient,
-          amount: 100.45,
-          currencyCode: "LKR",
-          orderDescription: "Netflix",
-          customerFirstName: "Aslam",
-          customerLastName: "Kasun",
-          customerEmail: "test@org.lk",
-          customerMobilePhone: "0777123456",
-          billingAddressStreet: "Hill Street",
-          billingAddressCity: "Dehiwala",
-          billingAddressCountry: "LK",
-          billingAddressPostcodeZip: "10350",
-          onPaymentCompleted: (data) {
-            print("onPaymentCompleted: $data");
-          },
-          onPaymentCancelled: () {
-            print("onPaymentCancelled");
-          },
-          onPaymentError: (data) {
-            print("onPaymentError: $data");
-          },
-        ),
+  @override
+  Widget build(BuildContext context) {
+    _loadData();
+    _payableIPG?.onPaymentStarted = (data) {
+      log('Payment started');
+    };
+    _payableIPG?.onPaymentCompleted = (data) {
+      log('Payment completed');
+    };
+    _payableIPG?.onPaymentError = (message) {
+      log('Payment error: $message');
+    };
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Checkout'),
       ),
-    ),
-  );
-}
+      body: Stack(
+        children: [
+          if (_payableIPG != null) _payableIPG!,
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+        PAYableIPGClient myIpgClient = const PAYableIPGClient(
+          logoUrl: "https://i.imgur.com/l21F5us.png",
+          returnUrl: "https://example.com/receipt",
+          merchantKey: "A748BFC24F8F6C61",
+          merchantToken: "09FD8632EED1D1FEB9AD9A5E55427452",
+          webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/"
+        );
+
+        PAYableIPG payableIPG = PAYableIPG(
+          ipgClient: myIpgClient,
+          amount: "100.00",
+          currencyCode: "LKR",
+          paymentType: "1",
+          orderDescription: "Order description goes here",
+          invoiceId: _generateInvoiceId(),
+          customerFirstName: "John",
+          customerLastName: "Doe",
+          customerMobilePhone: "0777123456",
+          customerEmail: "johndoe@gmail.com",
+          billingAddressStreet: "Hill Street",
+          billingAddressCity: "Colombo",
+          billingAddressCountry: "LK",
+          billingAddressPostcodeZip: "70000"
+        );
+    }
+  }
 ```
+> Check the sample app for a full working code and more details on implementation.
 
 <hr/>
 
 ### Advanced Usage
 
-<b>1.</b> Pay with session `uid` without `merchantKey` and `merchantToken`.
-
-```dart
-PAYableIPGSession(
-    uid: "969077C7-EBB5-428A-9F09-FF195560F200",
-    onPaymentCompleted: (data) {
-      print("onPaymentCompleted: $data");
-    },
-    onPaymentCancelled: () {
-      print("onPaymentCancelled");
-    },
-    onPaymentError: (data) {
-      print("onPaymentError: $data");
-    },
-    environment: IPGEnvironment.sandbox,
-)
-```
-
-<b>2.</b> Check the status of the transaction using `uid` and `resultIndicator`.
+Check the status of the transaction using `uid` and `resultIndicator` receieved from `onPaymentStarted` or `onPaymentCompleted`.
 
 ```dart
 var data = await ipgClient.getStatus("uid", "resultIndicator");
@@ -174,6 +160,8 @@ This document contains all the HTTP APIs used in this package.
 
 ![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
 
-> If you want to do more customizations on this package you can get the source code from this repository and use it for further developments.
+> If you want to do more customization on this package, you can get the source code from this repository and use it for further development.
+
+<br>
 
 PAYable IPG SDK - Flutter Integration
