@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  static const double inputFieldsGap = 20;
+  final _formKey = GlobalKey<FormState>();
   final merchantKeyController = TextEditingController();
   final merchantTokenController = TextEditingController();
   final packageNameController = TextEditingController();
@@ -51,70 +51,81 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: merchantKeyController,
-              decoration: const InputDecoration(
-                labelText: 'Merchant Key*',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: inputFieldsGap),
-            TextFormField(
-              controller: merchantTokenController,
-              decoration: const InputDecoration(
-                labelText: 'Merchant Token*',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: inputFieldsGap),
-            TextFormField(
-              controller: packageNameController,
-              decoration: const InputDecoration(
-                labelText: 'Package Name*',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: inputFieldsGap),
-            TextFormField(
-              controller: logoUrlController,
-              decoration: const InputDecoration(
-                labelText: 'Logo URL*',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: inputFieldsGap),
-            TextFormField(
-              controller: notificationUrlController,
-              decoration: const InputDecoration(
-                labelText: 'Merchant Notification URL',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
               children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                TextFormField(
+                  controller: merchantKeyController,
+                  decoration: const InputDecoration(
+                    labelText: 'Merchant Key*',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    _saveSettings();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Saved'))
-                    );
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Save'),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: merchantTokenController,
+                  decoration: const InputDecoration(
+                    labelText: 'Merchant Token*',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: packageNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Package Name*',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: logoUrlController,
+                  decoration: const InputDecoration(
+                    labelText: 'Logo URL*',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: notificationUrlController,
+                  decoration: const InputDecoration(
+                    labelText: 'Merchant Notification URL',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _saveSettings();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Saved'))
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
