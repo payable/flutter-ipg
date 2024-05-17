@@ -143,6 +143,7 @@ class PAYableIPGState extends State<PAYableIPG> {
   }
 
   Future<void> fetchResponseUrl() async {
+    final environment = widget.ipgClient.environment;
     final Map<String, dynamic> requestData = {
       // Set by the developer
       "logoUrl": widget.ipgClient.logoUrl,
@@ -155,7 +156,7 @@ class PAYableIPGState extends State<PAYableIPG> {
       "isMobilePayment": 1,
       "integrationType": "Android SDK",
       "integrationVersion": "2.0.0",
-      "statusReturnUrl": "https://payable-ipg-dev.web.app/ipg/dev/status-view",
+      "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
       "packageName": await getPackageName(),
@@ -235,8 +236,9 @@ class PAYableIPGState extends State<PAYableIPG> {
     });
 
     // Prepare request
-    String endpoint = getEndpoint(widget.ipgClient.environment);
+    String endpoint = getEndpoint(environment);
     String json = jsonEncode(requestData);
+    log('Environment: $endpoint');
     log("Sending request: $json");
 
     // Make request

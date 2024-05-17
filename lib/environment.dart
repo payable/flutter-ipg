@@ -8,20 +8,14 @@ enum IPGEnvironment {
 String getEndpoint(IPGEnvironment? environment) {
   switch (environment) {
     case IPGEnvironment.dev:
-      "https://payable-ipg-dev.web.app/ipg/dev";
-      break;
+      return "https://payable-ipg-dev.web.app/ipg/dev";
     case IPGEnvironment.qa:
-      "https://qaipgpayment.payable.lk";
-      break;
+      return "https://qaipgpayment.payable.lk/ipg/qa";
     case IPGEnvironment.sandbox:
-      "https://sandboxipgpayment.payable.lk";
-      break;
+      return "https://sandboxipgpayment.payable.lk/ipg/sandbox";
     case IPGEnvironment.live:
-      "https://ipgpayment.payable.lk";
-      break;
+      return "https://ipgpayment.payable.lk/ipg/pro";
     case null:
-      "https://payable-ipg-dev.web.app/ipg/dev";
-      break;
+      return "https://payable-ipg-dev.web.app/ipg/dev";
   }
-  return "https://payable-ipg-dev.web.app/ipg/dev";
 }
