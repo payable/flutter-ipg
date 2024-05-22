@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg/utils.dart';
 import 'package:payable_ipg_demo/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,10 +33,10 @@ class _PaymentPageState extends State<PaymentPage> {
       log('Payment completed');
       Navigator.popUntil(context, (route) => route.isFirst);
     };
-    _payableIPG?.onPaymentError = (message) {
-      log('Payment error: $message');
+    _payableIPG?.onPaymentError = (data) {
+      log('Payment error');
       setState(() {
-        _errorMessage = message;
+        _errorMessage = getError(data);
       });
     };
     return Scaffold(
@@ -113,5 +115,30 @@ class _PaymentPageState extends State<PaymentPage> {
     return String.fromCharCodes(
         List.generate(8, (index) => chars.codeUnitAt(math.Random().nextInt(chars.length)))
     );
+  }
+
+  String getError(String json) {
+    final Map<String, dynamic> data = jsonDecode(json) as Map<String, dynamic>;
+
+    if (data['errors'] != null) {
+      // Iterate through the first list of errors (assuming there can be multiple error messages per field)
+      for (final errorList in data['errors'].values) {
+        if (errorList is List) {
+          for (final errorMessage in errorList) {
+            // Extract only alphanumeric characters, spaces, and common punctuation
+            final String filteredMessage = RegExp(r'^[a-zA-Z0-9\s\-.,!?:]+$').stringMatch(errorMessage) ?? '';
+            if (filteredMessage.isNotEmpty) {
+              return filteredMessage;
+            }
+          }
+        }
+      }
+    }
+
+    if (json.contains('logoUrl')) {
+      return 'Please enter a valid Logo URL';
+    }
+
+    return 'Something went wrong';
   }
 }
