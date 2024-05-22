@@ -188,6 +188,10 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                       label: 'Monthly',
                     ),
                     DropdownMenuEntry<String>(
+                      value: 'QUARTERLY',
+                      label: 'Quarterly',
+                    ),
+                    DropdownMenuEntry<String>(
                       value: 'YEARLY',
                       label: 'Yearly',
                     ),
