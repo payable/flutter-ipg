@@ -158,7 +158,7 @@ This document contains all the HTTP APIs used in this package.
 
 ### Demo
 
-![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
+![](https://raw.githubusercontent.com/payable/flutter-ipg/sprint7/screen.gif)
 
 > If you want to do more customization on this package, you can get the source code from this repository and use it for further development.
 
