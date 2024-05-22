@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:payable_ipg/return_data.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'Payment_data.dart';
+import 'data/payment_data.dart';
+import 'data/return_data.dart';
 import 'environment.dart';
 import 'ipg_client.dart';
 import 'utils.dart';
@@ -274,7 +274,7 @@ class PAYableIPGState extends State<PAYableIPG> {
           ..loadRequest(Uri.parse(_responseUrl!));
       });
     } else {
-      log("Request error: ${response.statusCode}");
+      log("Error response: ${response.body}");
       if (widget.onPaymentError != null) {
         widget.onPaymentError!(response.body);
       }
