@@ -222,7 +222,6 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                     labelText: 'Retry attempts*',
                     border: OutlineInputBorder(),
                   ),
-                  validator: _isValue01,
                   keyboardType: TextInputType.number,
                 ),
               ),

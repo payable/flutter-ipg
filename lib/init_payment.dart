@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:payable_ipg/request_error.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'data/payment_data.dart';
 import 'data/return_data.dart';
@@ -68,6 +69,8 @@ class PAYableIPG extends StatefulWidget {
   OnPaymentCompleted? onPaymentCompleted;
   /// Called if an error occurs while the user is any point of making a payment.
   OnPaymentError? onPaymentError;
+  /// Called when the user taps 'Back' after an error
+  OnPaymentCancelled? onPaymentCancelled;
 
   /// Returns a [WebViewWidget] for the payment process.
   PAYableIPG(
@@ -120,6 +123,7 @@ class PAYableIPG extends StatefulWidget {
 
 class PAYableIPGState extends State<PAYableIPG> {
   String? _responseUrl;
+  bool _errorOccurred = false;
 
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -127,11 +131,22 @@ class PAYableIPGState extends State<PAYableIPG> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
+    RequestError requestError = RequestError();
+    requestError.onBackPressed = () {
+      widget.onPaymentCancelled!();
+    };
+    if (_errorOccurred) {
+      child = requestError;
+    }
+    else if (_responseUrl != null) {
+      child = WebViewWidget(controller: controller);
+    } else {
+      child = const CircularProgressIndicator();
+    }
     return Scaffold(
       body: Center(
-        child: _responseUrl != null
-            ? WebViewWidget(controller: controller)
-            : const CircularProgressIndicator(),
+        child: child,
       ),
     );
   }
@@ -278,6 +293,9 @@ class PAYableIPGState extends State<PAYableIPG> {
       if (widget.onPaymentError != null) {
         widget.onPaymentError!(response.body);
       }
+      setState(() {
+        _errorOccurred = true;
+      });
     }
   }
 }
@@ -285,3 +303,4 @@ class PAYableIPGState extends State<PAYableIPG> {
 typedef OnPaymentStarted = void Function(PaymentData data)?;
 typedef OnPaymentCompleted = void Function(ReturnData data)?;
 typedef OnPaymentError = void Function(String message)?;
+typedef OnPaymentCancelled = void Function()?;
