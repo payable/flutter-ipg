@@ -50,15 +50,17 @@ PAYableIPGClient ipgClient = PAYableIPGClient(
 
 <b>3.</b> Call `PAYableIPG` into your application body.
 
+> One-time payments
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
     amount: 100.45,
     currencyCode: "LKR",
+    paymentType: 1, // The value is 1 for one-time payments
     orderDescription: "Netflix",
-    customerFirstName: "Aslam",
-    customerLastName: "Kasun",
-    customerEmail: "test@org.lk",
+    customerFirstName: "John",
+    customerLastName: "Doe",
+    customerEmail: "johndoe@gmail.com",
     customerMobilePhone: "0777123456",
     billingAddressStreet: "Hill Street",
     billingAddressCity: "Dehiwala",
@@ -67,7 +69,32 @@ PAYableIPG(
 )
 ```
 
-> Shipping details are optional. Rest of the fields are only applicable for recurring payments.
+
+> Recurring payments
+```dart
+PAYableIPG(
+    ipgClient: ipgClient,
+    amount: 0.00,
+    currencyCode: "LKR",
+    paymentType: 2, // The value is 2 for recurring payments
+    orderDescription: "Play Pass",
+    customerFirstName: "John",
+    customerLastName: "Doe",
+    customerEmail: "johndoe@gmail.com",
+    customerMobilePhone: "0777123456",
+    billingAddressStreet: "Hill Street",
+    billingAddressCity: "Dehiwala",
+    billingAddressCountry: "LK",
+    billingAddressPostcodeZip: "10350"
+    startDate: '2024-05-27',
+    endDate: '2024-11-27',
+    recurringAmount: 350.00,
+    interval: 'MONTHLY', // Sets how often the payment is made. The value can be MONTHLY, QUARTERLY or YEARLY.
+    isRetry: '1', // Sets whether automatic retying is allowed in case of a payment fails. (1 - allowed, 0 - not allowed)
+    retryAttempts: '3', // Sets the amount of days that automatic retrying will be performed.
+    doFirstPayment: '0', // Sets whether the user is making a payment in addition to the recurring amount.
+)
+```
 
 <hr/>
 
@@ -92,6 +119,9 @@ class _PaymentPageState extends State<PaymentPage> {
     };
     _payableIPG?.onPaymentError = (message) {
       log('Payment error: $message');
+    };
+    _payableIPG?.onPaymentCancelled = () {
+      log('Payment cancelled');
     };
     return Scaffold(
       appBar: AppBar(
