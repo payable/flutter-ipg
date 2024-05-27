@@ -23,7 +23,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^2.0.0
+payable_ipg: ^2.0.2
 ```
 
 <hr/>
