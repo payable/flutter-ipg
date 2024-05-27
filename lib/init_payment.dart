@@ -32,6 +32,7 @@ class PAYableIPG extends StatefulWidget {
   final String? startDate;
   final String? endDate;
   final String? recurringAmount;
+  /// Sets how often the payment is made. The value can be MONTHLY, QUARTERLY or YEARLY.
   final String? interval;
   /// Sets whether automatic retying is allowed in case of a payment fails.
   /// 1 - allowed, 0 - not allowed
