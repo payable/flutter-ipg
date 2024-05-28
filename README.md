@@ -96,6 +96,28 @@ PAYableIPG(
 )
 ```
 
+> Optional params
+```dart
+custom1 // Merchant specific data
+custom2 // Merchant specific data
+billingPhone
+billingCompanyName
+billingStreetAddress2
+billingProvince
+shippingFirstName
+shippingLastName
+shippingMobile
+shippingPhone
+shippingEmail
+shippingCompanyName
+shippingStreetAddress1
+shippingStreetAddress2
+shippingTownCity
+shippingProvince
+shippingCountry // country code (LK, US, etc.)
+shippingPostcode
+```
+
 <hr/>
 
 ### Example Usage
