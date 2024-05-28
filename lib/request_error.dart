@@ -43,7 +43,7 @@ class _RequestErrorState extends State<RequestError> {
                 style: TextStyle(fontSize: 26.0, color: Colors.red),
               ),
               const Text(
-                'Something went wrong. Please contact your merchant.',
+                'Something went wrong.\nPlease contact your merchant.',
                 style: TextStyle(fontSize: 16.0),
                 textAlign: TextAlign.center,
               ),
