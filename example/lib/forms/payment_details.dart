@@ -278,9 +278,10 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
     CheckoutFormData cfd = Get.find();
     cfd.paymentType = _isRecurring ? 2 : 1;
     if (_isRecurring) {
+      double amount = double.tryParse(_recurringAmountController.text) ?? 0.00;
+      cfd.recurringAmount = amount.toStringAsFixed(2);
       cfd.startDate = _startDateController.text;
       cfd.endDate = _endDateController.text.isNotEmpty ? _endDateController.text : 'FOREVER';
-      cfd.recurringAmount = double.parse(_recurringAmountController.text).toStringAsFixed(2);
       cfd.interval = _intervalController.text.toUpperCase();
       cfd.isRetry = _isRetryController.text;
       cfd.retryAttempts = _retryAttemptsController.text;

@@ -127,7 +127,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   void _storeFormData() {
     CheckoutFormData cfd = Get.find();
-    cfd.amount = double.parse(_amountController.text).toStringAsFixed(2);
+    double amount = double.tryParse(_amountController.text) ?? 0.00;
+    cfd.amount = amount.toStringAsFixed(2);
     cfd.orderDescription = _orderDescriptionController.text;
     cfd.custom1 = _custom1Controller.text;
     cfd.custom2 = _custom2Controller.text;
