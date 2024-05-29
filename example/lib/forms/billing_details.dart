@@ -255,5 +255,20 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
     cfd.billingProvince = _provinceController.value.text;
     cfd.billingCountry = _countryController.value.text;
     cfd.billingPostcode = _postcodeController.value.text;
+
+    if (!_shipToDifferentAddress) {
+      cfd.shippingFirstName = _firstNameController.value.text;
+      cfd.shippingLastName = _lastNameController.value.text;
+      cfd.shippingMobile = _mobileController.value.text;
+      cfd.shippingPhone = _phoneController.value.text;
+      cfd.shippingEmail = _emailController.value.text;
+      cfd.shippingCompanyName = _companyNameController.value.text;
+      cfd.shippingStreetAddress1 = _street1Controller.value.text;
+      cfd.shippingStreetAddress2 = _street2Controller.value.text;
+      cfd.shippingTownCity = _townCityController.value.text;
+      cfd.shippingProvince = _provinceController.value.text;
+      cfd.shippingCountry = _countryController.value.text;
+      cfd.shippingPostcode = _postcodeController.value.text;
+    }
   }
 }
