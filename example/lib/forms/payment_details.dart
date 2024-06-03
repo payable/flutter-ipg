@@ -26,6 +26,12 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
   DateTime? _selectedEndDate;
 
   @override
+  void initState() {
+    super.initState();
+    _endDateController.text = 'FOREVER';
+  }
+
+  @override
   Widget build(BuildContext context) {
     CheckoutFormData cfd = Get.find();
     return Scaffold(
@@ -143,7 +149,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
                 child: TextFormField(
                   controller: _endDateController,
                   decoration: const InputDecoration(
-                    labelText: 'End date*',
+                    labelText: 'End date',
                     border: OutlineInputBorder(),
                   ),
                   onTap: () {
@@ -281,7 +287,7 @@ class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
       double amount = double.tryParse(_recurringAmountController.text) ?? 0.00;
       cfd.recurringAmount = amount.toStringAsFixed(2);
       cfd.startDate = _startDateController.text;
-      cfd.endDate = _endDateController.text.isNotEmpty ? _endDateController.text : 'FOREVER';
+      cfd.endDate = _endDateController.text;
       cfd.interval = _intervalController.text.toUpperCase();
       cfd.isRetry = _isRetryController.text;
       cfd.retryAttempts = _retryAttemptsController.text;
