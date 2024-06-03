@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
@@ -17,6 +18,8 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   PAYableIPGClient? _myIpgClient;
   PAYableIPG? _payableIPG;
+  List<String>? _errorMessages;
+  bool _loadIPG = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +33,49 @@ class _PaymentPageState extends State<PaymentPage> {
     };
     _payableIPG?.onPaymentError = (data) {
       log('Payment error');
+      if (data.status == 3009) {
+        final errorMap = data.error;
+        final errorMessages = errorMap.values.expand((list) => list).toList();
+        setState(() {
+          _loadIPG = false;
+          _errorMessages = errorMessages.cast<String>();
+        });
+      }
     };
     _payableIPG?.onPaymentCancelled = () {
       log('Payment cancelled');
       Navigator.pop(context);
     };
+
+    Widget children;
+    if (_payableIPG != null && _loadIPG) {
+      children = _payableIPG as Widget;
+    }
+    else if (_errorMessages != null) {
+      children = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...?_errorMessages?.map((errorMessage) =>
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )),
+        ],
+      );
+    }
+    else {
+      children = Container();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
       body: Stack(
         children: [
-          if (_payableIPG != null) _payableIPG!,
+          children
         ],
       ),
     );

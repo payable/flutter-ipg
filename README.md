@@ -23,7 +23,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^2.0.2
+payable_ipg: ^2.0.4
 ```
 
 <hr/>
@@ -129,6 +129,8 @@ import 'package:payable_ipg/payable_ipg.dart';
 class _PaymentPageState extends State<PaymentPage> {
   PAYableIPGClient? _myIpgClient;
   PAYableIPG? _payableIPG;
+  List<String>? _errorMessages;
+  bool _loadIPG = true;
 
   @override
   Widget build(BuildContext context) {
@@ -138,20 +140,53 @@ class _PaymentPageState extends State<PaymentPage> {
     };
     _payableIPG?.onPaymentCompleted = (data) {
       log('Payment completed');
+      Navigator.popUntil(context, (route) => route.isFirst);
     };
-    _payableIPG?.onPaymentError = (message) {
-      log('Payment error: $message');
+    _payableIPG?.onPaymentError = (data) {
+      log('Payment error');
+      if (data.status == 3009) {
+        final errorMap = data.error;
+        final errorMessages = errorMap.values.expand((list) => list).toList();
+        setState(() {
+          _loadIPG = false;
+          _errorMessages = errorMessages.cast<String>();
+        });
+      }
     };
     _payableIPG?.onPaymentCancelled = () {
       log('Payment cancelled');
+      Navigator.pop(context);
     };
+
+    Widget children;
+    if (_payableIPG != null && _loadIPG) {
+      children = _payableIPG as Widget;
+    }
+    else if (_errorMessages != null) {
+      children = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...?_errorMessages?.map((errorMessage) =>
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )),
+        ],
+      );
+    }
+    else {
+      children = Container();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
       body: Stack(
         children: [
-          if (_payableIPG != null) _payableIPG!,
+          children
         ],
       ),
     );

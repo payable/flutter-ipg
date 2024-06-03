@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:payable_ipg/request_error.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'data/error_data.dart';
 import 'data/payment_data.dart';
 import 'data/return_data.dart';
 import 'environment.dart';
@@ -170,8 +171,8 @@ class PAYableIPGState extends State<PAYableIPG> {
 
       // Hardcoded, developer is not allowed to set the values
       "isMobilePayment": 1,
-      "integrationType": "Android SDK",
-      "integrationVersion": "2.0.0",
+      "integrationType": "Flutter SDK",
+      "integrationVersion": "2.0.4",
       "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
@@ -292,7 +293,7 @@ class PAYableIPGState extends State<PAYableIPG> {
     } else {
       log("Error response: ${response.body}");
       if (widget.onPaymentError != null) {
-        widget.onPaymentError!(response.body);
+        widget.onPaymentError!(getErrorData(response.body));
       }
       setState(() {
         _errorOccurred = true;
@@ -303,5 +304,5 @@ class PAYableIPGState extends State<PAYableIPG> {
 
 typedef OnPaymentStarted = void Function(PaymentData data)?;
 typedef OnPaymentCompleted = void Function(ReturnData data)?;
-typedef OnPaymentError = void Function(String message)?;
+typedef OnPaymentError = void Function(ErrorData data)?;
 typedef OnPaymentCancelled = void Function()?;
