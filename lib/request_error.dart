@@ -13,9 +13,15 @@ class _RequestErrorState extends State<RequestError> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
+      backgroundColor: const Color(0xff477bbb),
+      body: Container(
+        margin: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -52,7 +58,7 @@ class _RequestErrorState extends State<RequestError> {
                 child: SizedBox(
                   width: 120,
                   child: FilledButton(
-                    style: FilledButton.styleFrom(backgroundColor: const Color(0xff1c9ee3)),
+                    style: FilledButton.styleFrom(backgroundColor: const Color(0xff3D8AB6)),
                     onPressed: () {
                       widget.onBackPressed!();
                     },
@@ -76,10 +82,12 @@ class _RequestErrorState extends State<RequestError> {
               ),
               const Text(
                 'The payment will be processed through PAYable Private Limited.',
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12.0, color: Colors.grey),
               ),
               const Text(
                 'For Inquiries; Call Customer Support at +94 11 777 6 777',
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12.0, color: Colors.grey),
               ),
             ],
