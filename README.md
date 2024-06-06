@@ -74,7 +74,7 @@ PAYableIPG(
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
-    amount: 0.00,
+    amount: 350.00, // Sets the amount needs to be charged along with this payment
     currencyCode: "LKR",
     paymentType: 2, // The value is 2 for recurring payments
     orderDescription: "Play Pass",
@@ -84,15 +84,15 @@ PAYableIPG(
     customerMobilePhone: "0777123456",
     billingAddressStreet: "Hill Street",
     billingAddressCity: "Dehiwala",
-    billingAddressCountry: "LK",
+    billingAddressCountry: "LK", // ISO country code (LK, US, etc.)
     billingAddressPostcodeZip: "10350"
     startDate: '2024-05-27',
     endDate: '2024-11-27',
-    recurringAmount: 350.00,
-    interval: 'MONTHLY', // Sets how often the payment is made. The value can be MONTHLY, QUARTERLY or YEARLY.
+    recurringAmount: 350.00, // Sets the amount needs to be recurred 
+    interval: 'MONTHLY', // Sets how often the payment is made. The value can be MONTHLY, QUARTERLY or ANNUALLY.
     isRetry: '1', // Sets whether automatic retying is allowed in case of a payment fails. (1 - allowed, 0 - not allowed)
-    retryAttempts: '3', // Sets the amount of days that automatic retrying will be performed.
-    doFirstPayment: '0', // Sets whether the user is making a payment in addition to the recurring amount.
+    retryAttempts: '3', // Sets the amount of days that automatic retrying will be performed. (max: 5)
+    doFirstPayment: '1', // Sets whether the user is making the initial payment of this subscription along with this payment. 
 )
 ```
 
@@ -114,7 +114,7 @@ shippingStreetAddress1
 shippingStreetAddress2
 shippingTownCity
 shippingProvince
-shippingCountry // country code (LK, US, etc.)
+shippingCountry
 shippingPostcode
 ```
 
