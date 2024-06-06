@@ -1,3 +1,7 @@
+## 2.0.4
+
+* added support for recurring transactions
+
 ## 1.1.1
 
 * optional params removed
