@@ -1,11 +1,11 @@
-name: payable_ipg
-description: PAYable IPG
+name: payable_ipg_flutter
+description: PAYable IPG SDK for Flutter
 version: 2.0.4
 repository: https://github.com/payable/flutter-ipg
 homepage: https://flutter-ipg.payable.lk
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: ">=2.17.6 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

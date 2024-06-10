@@ -23,7 +23,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg: ^2.0.4
+payable_ipg_flutter: ^2.0.4
 ```
 
 <hr/>
@@ -33,7 +33,7 @@ payable_ipg: ^2.0.4
 <b>1.</b> Import PAYable IPG SDK package.
 
 ```dart
-import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg/payable_ipg_flutter.dart';
 ```
 
 <b>2.</b> Create PAYable IPG client with `PAYableIPGClient`.
@@ -124,7 +124,7 @@ shippingPostcode
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg/payable_ipg_flutter.dart';
 
 class _PaymentPageState extends State<PaymentPage> {
   PAYableIPGClient? _myIpgClient;

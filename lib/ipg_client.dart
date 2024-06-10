@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:payable_ipg/environment.dart';
 import 'package:http/http.dart' as http;
+
+import 'environment.dart';
 
 class PAYableIPGClient {
   /// URL for your company's logo

@@ -1,6 +1,5 @@
 library payable_ipg.utils;
 
-import 'dart:developer';
 import 'package:package_info/package_info.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';

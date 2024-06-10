@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:payable_ipg/request_error.dart';
+import 'package:payable_ipg_flutter/request_error.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'data/error_data.dart';
 import 'data/payment_data.dart';

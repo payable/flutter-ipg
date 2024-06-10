@@ -3,7 +3,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:payable_ipg/payable_ipg.dart';
+import 'package:payable_ipg_flutter/environment.dart';
+import 'package:payable_ipg_flutter/init_payment.dart';
+import 'package:payable_ipg_flutter/ipg_client.dart';
 import 'package:payable_ipg_demo/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

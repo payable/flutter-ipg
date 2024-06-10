@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 class ErrorData {
   late int status;
@@ -48,6 +49,7 @@ ErrorData getErrorData(String responseData) {
     }
   } on FormatException catch (e) {
     errorData.error = genericError;
+    log(e.toString());
   }
 
   return errorData;

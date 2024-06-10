@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Add the relative path of the IPG SDK
-  payable_ipg:
+  payable_ipg_flutter:
     path: ../
 
   # Other dependencies
