@@ -66,13 +66,13 @@ class PAYableIPG extends StatefulWidget {
 
   /// Called when the payment page loads after a successful request. The values
   /// of [PaymentData] can be used to check the payment status later.
-  OnPaymentStarted? onPaymentStarted;
+  final OnPaymentStarted? onPaymentStarted;
   /// Called when the [WebViewWidget] attempts to load the [returnUrl] after a user has completed a payment.
-  OnPaymentCompleted? onPaymentCompleted;
+  final OnPaymentCompleted? onPaymentCompleted;
   /// Called if an error occurs while the user is any point of making a payment.
-  OnPaymentError? onPaymentError;
+  final OnPaymentError? onPaymentError;
   /// Called when the user taps 'Back' after an error
-  OnPaymentCancelled? onPaymentCancelled;
+  final OnPaymentCancelled? onPaymentCancelled;
 
   /// Returns a [WebViewWidget] for the payment process.
   PAYableIPG(
@@ -116,8 +116,10 @@ class PAYableIPG extends StatefulWidget {
       this.shippingAddressStateProvince,
       this.shippingAddressCountry,
       this.shippingAddressPostcodeZip,
+      this.onPaymentStarted,
       this.onPaymentCompleted,
-      this.onPaymentError});
+      this.onPaymentError,
+      this.onPaymentCancelled});
 
   @override
   PAYableIPGState createState() => PAYableIPGState();
@@ -134,10 +136,9 @@ class PAYableIPGState extends State<PAYableIPG> {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    RequestError requestError = RequestError();
-    requestError.onBackPressed = () {
+    RequestError requestError = RequestError(onBackPressed: () {
       widget.onPaymentCancelled!();
-    };
+    });
     if (_errorOccurred) {
       child = requestError;
     }

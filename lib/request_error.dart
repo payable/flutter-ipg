@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RequestError extends StatefulWidget {
-  RequestError({super.key});
-  OnBackPressed onBackPressed;
+  const RequestError({super.key, this.onBackPressed});
+  final OnBackPressed onBackPressed;
 
   @override
   State<RequestError> createState() => _RequestErrorState();

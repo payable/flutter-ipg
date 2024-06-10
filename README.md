@@ -135,28 +135,6 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     _loadData();
-    _payableIPG?.onPaymentStarted = (data) {
-      log('Payment started');
-    };
-    _payableIPG?.onPaymentCompleted = (data) {
-      log('Payment completed');
-      Navigator.popUntil(context, (route) => route.isFirst);
-    };
-    _payableIPG?.onPaymentError = (data) {
-      log('Payment error');
-      if (data.status == 3009) {
-        final errorMap = data.error;
-        final errorMessages = errorMap.values.expand((list) => list).toList();
-        setState(() {
-          _loadIPG = false;
-          _errorMessages = errorMessages.cast<String>();
-        });
-      }
-    };
-    _payableIPG?.onPaymentCancelled = () {
-      log('Payment cancelled');
-      Navigator.pop(context);
-    };
 
     Widget children;
     if (_payableIPG != null && _loadIPG) {
@@ -216,7 +194,31 @@ class _PaymentPageState extends State<PaymentPage> {
           billingAddressStreet: "Hill Street",
           billingAddressCity: "Colombo",
           billingAddressCountry: "LK",
-          billingAddressPostcodeZip: "70000"
+          billingAddressPostcodeZip: "70000",
+
+          onPaymentStarted: (data) {
+            log('Payment started');
+          },
+          onPaymentCompleted: (data) {
+            log('Payment completed');
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+          onPaymentError: (data) {
+            log('Payment error');
+            if (data.status == 3009) {
+              final errorMap = data.error;
+              final errorMessages =
+              errorMap.values.expand((list) => list).toList();
+              setState(() {
+                _loadIPG = false;
+                _errorMessages = errorMessages.cast<String>();
+              });
+            }
+          },
+          onPaymentCancelled: () {
+            log('Payment cancelled');
+            Navigator.pop(context);
+          }
         );
     }
   }
