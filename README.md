@@ -33,7 +33,7 @@ payable_ipg_flutter: ^2.0.4
 <b>1.</b> Import PAYable IPG SDK package.
 
 ```dart
-import 'package:payable_ipg/payable_ipg_flutter.dart';
+import 'package:payable_ipg_flutter/payable_ipg_flutter.dart';
 ```
 
 <b>2.</b> Create PAYable IPG client with `PAYableIPGClient`.
