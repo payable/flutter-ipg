@@ -172,7 +172,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Future<void> _loadData() async {
     setState(() {
-        PAYableIPGClient myIpgClient = const PAYableIPGClient(
+        _myIpgClient = const PAYableIPGClient(
           logoUrl: "https://i.imgur.com/l21F5us.png",
           returnUrl: "https://example.com/receipt",
           merchantKey: "A748BFC24F8F6C61",
@@ -180,7 +180,7 @@ class _PaymentPageState extends State<PaymentPage> {
           webhookUrl: "https://ipgv2-ntb.payable.lk/new-js-sdk/api/"
         );
 
-        PAYableIPG payableIPG = PAYableIPG(
+        _payableIPG = PAYableIPG(
           ipgClient: myIpgClient,
           amount: "100.00",
           currencyCode: "LKR",
