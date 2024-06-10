@@ -124,7 +124,7 @@ shippingPostcode
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:payable_ipg/payable_ipg_flutter.dart';
+import 'package:payable_ipg_flutter/payable_ipg_flutter.dart';
 
 class _PaymentPageState extends State<PaymentPage> {
   PAYableIPGClient? _myIpgClient;
