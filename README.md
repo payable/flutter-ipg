@@ -4,7 +4,7 @@
 
 Flutter Package - [flutter-ipg.payable.lk](https://flutter-ipg.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
 
-[![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg)
+[![Pub](https://img.shields.io/pub/v/payable_ipg_flutter.svg)](https://pub.dev/packages/payable_ipg_flutter)
 
 <hr/>
 
@@ -247,7 +247,7 @@ This document contains all the HTTP APIs used in this package.
 
 ### Demo
 
-![](https://raw.githubusercontent.com/payable/flutter-ipg/sprint7/screen.gif)
+![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
 
 > If you want to do more customization on this package, you can get the source code from this repository and use it for further development.
 
