@@ -36,8 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Add the relative path of the IPG SDK
-  payable_ipg_flutter: ^2.0.4
-    # path: ../ # For development only
+  payable_ipg_flutter:
+    path: ../ # For development only
 
   # Other dependencies
   shared_preferences: ^2.0.15 # To store merchant settings

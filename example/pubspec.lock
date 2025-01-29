@@ -192,14 +192,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
-  package_info:
+  package_info_plus:
     dependency: transitive
     description:
-      name: package_info
-      sha256: "6c07d9d82c69e16afeeeeb6866fe43985a20b3b50df243091bfc4a4ad2b03b75"
+      name: package_info_plus
+      sha256: a75164ade98cb7d24cfd0a13c6408927c6b217fa60dee5a7ff5c116a58f28918
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "8.0.2"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      sha256: a5ef9986efc7bf772f2696183a3992615baa76c1ffb1189318dd8803778fb05b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   path:
     dependency: transitive
     description:
@@ -235,10 +243,9 @@ packages:
   payable_ipg_flutter:
     dependency: "direct main"
     description:
-      name: payable_ipg_flutter
-      sha256: "3de0c6bda971f97a8a3143fa81d2fdbc672924e36a4c8e699367173cde02af87"
-      url: "https://pub.dev"
-    source: hosted
+      path: ".."
+      relative: true
+    source: path
     version: "2.0.4"
   platform:
     dependency: transitive
