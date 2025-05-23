@@ -54,7 +54,7 @@ PAYableIPGClient ipgClient = PAYableIPGClient(
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
-    amount: 100.45,
+    amount: "100.45",
     currencyCode: "LKR",
     paymentType: 1, // The value is 1 for one-time payments
     orderDescription: "Netflix",
@@ -74,7 +74,7 @@ PAYableIPG(
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
-    amount: 350.00, // Sets the amount needs to be charged along with this payment
+    amount: "350.00", // Sets the amount needs to be charged along with this payment
     currencyCode: "LKR",
     paymentType: 2, // The value is 2 for recurring payments
     orderDescription: "Play Pass",
