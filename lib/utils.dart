@@ -1,13 +1,20 @@
 library payable_ipg.utils;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:universal_html/html.dart' as html;
 
 Future<String> getPackageName() async {
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  return packageInfo.packageName;
+  if (kIsWeb) {
+    final origin = html.window.location.origin!; // Wrong warning; don't remove.
+    return origin.replaceFirst(RegExp(r'^https?://'), '');
+  } else {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.packageName;
+  }
 }
 
 Future<String> getVersion() async {

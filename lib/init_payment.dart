@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:payable_ipg_flutter/request_error.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:universal_html/html.dart' as html;
 import 'data/error_data.dart';
 import 'data/payment_data.dart';
 import 'data/return_data.dart';
@@ -128,37 +130,48 @@ class PAYableIPG extends StatefulWidget {
 class PAYableIPGState extends State<PAYableIPG> {
   String? _responseUrl;
   bool _errorOccurred = false;
+  late final WebViewController controller;
 
-  WebViewController controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..setBackgroundColor(const Color(0x00000000));
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController();
+    if (!kIsWeb) {
+      controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setBackgroundColor(const Color(0x00000000));
+    }
+
+    fetchResponseUrl();
+  }
 
   @override
   Widget build(BuildContext context) {
     Widget child;
     RequestError requestError = RequestError(onBackPressed: () {
-      widget.onPaymentCancelled!();
+      widget.onPaymentCancelled?.call();
     });
+
     if (_errorOccurred) {
       child = requestError;
-    }
-    else if (_responseUrl != null) {
-      child = WebViewWidget(controller: controller);
+    } else if (_responseUrl != null) {
+      if (kIsWeb) {
+        Future.microtask(() {
+          html.window.open(_responseUrl!, '_self');
+        });
+        child = const SizedBox(); // empty temp in place
+      } else {
+        child = WebViewWidget(controller: controller);
+      }
     } else {
       child = const CircularProgressIndicator();
     }
+
     return Scaffold(
-      body: Center(
-        child: child,
-      ),
+      body: Center(child: child),
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchResponseUrl();
-  }
 
   Future<void> fetchResponseUrl() async {
     final environment = widget.ipgClient.environment;
@@ -173,7 +186,7 @@ class PAYableIPGState extends State<PAYableIPG> {
       // Hardcoded, developer is not allowed to set the values
       "isMobilePayment": 1,
       "integrationType": "Flutter SDK",
-      "integrationVersion": "2.0.4",
+      "integrationVersion": "2.1.0",
       "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
@@ -277,19 +290,23 @@ class PAYableIPGState extends State<PAYableIPG> {
       }
       setState(() {
         _responseUrl = paymentData.paymentPage;
-        controller
-          ..setNavigationDelegate(NavigationDelegate(
-              onNavigationRequest: (NavigationRequest request) {
-            if (request.url.contains(widget.ipgClient.returnUrl)) {
-              if (widget.onPaymentCompleted != null) {
-                ReturnData data = getReturnData(request.url);
-                widget.onPaymentCompleted!(data);
-                return NavigationDecision.prevent;
+        if (kIsWeb) {
+          html.window.open(_responseUrl!, "_self");
+        } else {
+          controller.setNavigationDelegate(NavigationDelegate(
+            onNavigationRequest: (NavigationRequest request) {
+              if (request.url.contains(widget.ipgClient.returnUrl)) {
+                if (widget.onPaymentCompleted != null) {
+                  ReturnData data = getReturnData(request.url);
+                  widget.onPaymentCompleted!(data);
+                  return NavigationDecision.prevent;
+                }
               }
-            }
-            return NavigationDecision.navigate;
-          }))
-          ..loadRequest(Uri.parse(_responseUrl!));
+              return NavigationDecision.navigate;
+            },
+          ));
+        controller.loadRequest(Uri.parse(_responseUrl!));
+        }
       });
     } else {
       log("Error response: ${response.body}");

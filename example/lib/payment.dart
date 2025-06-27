@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:payable_ipg_flutter/payable_ipg_flutter.dart';
@@ -21,9 +22,13 @@ class _PaymentPageState extends State<PaymentPage> {
   bool _loadIPG = true;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _loadData();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     Widget children;
     if (_payableIPG != null && _loadIPG) {
       children = _payableIPG as Widget;
@@ -32,26 +37,32 @@ class _PaymentPageState extends State<PaymentPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ...?_errorMessages?.map((errorMessage) => Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              )),
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.red),
+            ),
+          )),
         ],
       );
     } else {
-      children = Container();
+      children = const Center(child: CircularProgressIndicator());
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Checkout'),
-      ),
-      body: Stack(
-        children: [children],
-      ),
-    );
+
+    if (kIsWeb) {
+      return children;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Checkout'),
+        ),
+        body: Stack(
+          children: [children],
+        ),
+      );
+    }
   }
+
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -60,7 +71,7 @@ class _PaymentPageState extends State<PaymentPage> {
     setState(() {
       _myIpgClient = PAYableIPGClient(
           logoUrl: prefs.getString('logoUrl') ?? '',
-          returnUrl: 'https://com.example.payable_ipg_example',
+          returnUrl: prefs.getString('returnUrl') ?? '',
           merchantKey: prefs.getString('merchantKey') ?? '',
           merchantToken: prefs.getString('merchantToken') ?? '',
           webhookUrl: prefs.getString('notificationUrl') ?? '',

@@ -17,6 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final merchantTokenController = TextEditingController();
   final packageNameController = TextEditingController();
   final logoUrlController = TextEditingController();
+  final returnUrlController = TextEditingController();
   final notificationUrlController = TextEditingController();
 
   Future<void> _saveSettings() async {
@@ -25,6 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await prefs.setString('merchantToken', merchantTokenController.text);
     await prefs.setString('packageName', packageNameController.text);
     await prefs.setString('logoUrl', logoUrlController.text);
+    await prefs.setString('returnUrl', returnUrlController.text);
     await prefs.setString('notificationUrl', notificationUrlController.text);
   }
 
@@ -35,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
       merchantTokenController.text = prefs.getString('merchantToken') ?? '';
       packageNameController.text = prefs.getString('packageName') ?? '';
       logoUrlController.text = prefs.getString('logoUrl') ?? '';
+      returnUrlController.text = prefs.getString('returnUrl') ?? '';
       notificationUrlController.text = prefs.getString('notificationUrl') ?? '';
     });
   }
@@ -89,6 +92,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   controller: logoUrlController,
                   decoration: const InputDecoration(
                     labelText: 'Logo URL*',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: returnUrlController,
+                  decoration: const InputDecoration(
+                    labelText: 'Return URL*',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) => value!.isEmpty ? 'Required' : null,
