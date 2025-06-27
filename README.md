@@ -237,6 +237,22 @@ var data = await ipgClient.getStatus("uid", "resultIndicator");
 
 <hr/>
 
+### Supported Platforms
+Currently this SDK is tested and supports on Android, iOS and Web. 
+
+- When generating an API token via the portal:
+    - Category should be selected as 'App', regardless of the platform.
+    - For web, 'Package Name' should be your domain, and should be the same as the value returned from `html.window.location.origin` (without https://).
+      
+- When the payment process is finished:
+    - On mobile platforms, `onPaymentCompleted` callback will be invoked.
+    - On web platform, the user will be redirected to the `returnUrl` provided when creating `PAYableIPGClient`.
+      
+- `returnUrl` parameter is required regardles of the platform. You may use a valid placeholder URL for mobile platforms.
+
+
+<hr/>
+
 ### API Documentation
 
 This document contains all the HTTP APIs used in this package.
