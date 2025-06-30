@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:payable_ipg_flutter/request_error.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 import 'data/error_data.dart';
 import 'data/payment_data.dart';
@@ -174,6 +175,7 @@ class PAYableIPGState extends State<PAYableIPG> {
 
   Future<void> fetchResponseUrl() async {
     final environment = widget.ipgClient.environment;
+    final SharedPreferences pref = await SharedPreferences.getInstance();
     final Map<String, dynamic> requestData = {
       // Set by the developer
       "logoUrl": widget.ipgClient.logoUrl,
@@ -189,7 +191,7 @@ class PAYableIPGState extends State<PAYableIPG> {
       "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
-      "packageName": await getPackageName(),
+      "packageName": pref.getString('packageName'),
       "checkValue": getCheckValue(
           merchantKey: widget.ipgClient.merchantKey,
           merchantToken: widget.ipgClient.merchantToken,
