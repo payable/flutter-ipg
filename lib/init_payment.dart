@@ -135,9 +135,8 @@ class PAYableIPGState extends State<PAYableIPG> {
   @override
   void initState() {
     super.initState();
-    controller = WebViewController();
     if (!kIsWeb) {
-      controller
+      controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(const Color(0x00000000));
     }
