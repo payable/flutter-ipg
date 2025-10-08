@@ -191,7 +191,7 @@ class PAYableIPGState extends State<PAYableIPG> {
       "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
-      "packageName": pref.getString('packageName'),
+      "packageName": pref.getString('packageName') ?? await getPackageName(),
       "checkValue": getCheckValue(
           merchantKey: widget.ipgClient.merchantKey,
           merchantToken: widget.ipgClient.merchantToken,

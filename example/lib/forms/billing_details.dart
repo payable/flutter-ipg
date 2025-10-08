@@ -27,6 +27,39 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
   final _postcodeController = TextEditingController();
   bool _shipToDifferentAddress = false;
 
+  // Sample data for autofill
+  static const Map<String, String> _sampleData = {
+    'firstName': 'John',
+    'lastName': 'Doe',
+    'mobile': '0777123456',
+    'phone': '0112345678',
+    'email': 'john.doe@example.com',
+    'companyName': 'Acme Corporation',
+    'street1': '123 Main Street',
+    'street2': 'Apt 4B',
+    'townCity': 'Colombo',
+    'province': 'Western Province',
+    'country': 'LK',
+    'postcode': '00100',
+  };
+
+  void _autofillSampleData() {
+    setState(() {
+      _firstNameController.text = _sampleData['firstName']!;
+      _lastNameController.text = _sampleData['lastName']!;
+      _mobileController.text = _sampleData['mobile']!;
+      _phoneController.text = _sampleData['phone']!;
+      _emailController.text = _sampleData['email']!;
+      _companyNameController.text = _sampleData['companyName']!;
+      _street1Controller.text = _sampleData['street1']!;
+      _street2Controller.text = _sampleData['street2']!;
+      _townCityController.text = _sampleData['townCity']!;
+      _provinceController.text = _sampleData['province']!;
+      _countryController.text = _sampleData['country']!;
+      _postcodeController.text = _sampleData['postcode']!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +73,21 @@ class _BillingDetailsPageState extends State<BillingDetailsPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _autofillSampleData,
+                      icon: const Icon(Icons.auto_fix_high),
+                      label: const Text('Autofill Sample Data'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue.shade100,
+                        foregroundColor: Colors.blue.shade900,
+                      ),
+                    ),
+                  ),
+                ),
                 _buildBillingAddressSection(),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),

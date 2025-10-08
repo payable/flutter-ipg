@@ -27,6 +27,39 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
   final _countryController = TextEditingController();
   final _postcodeController = TextEditingController();
 
+  // Sample data for autofill
+  static const Map<String, String> _sampleData = {
+    'firstName': 'Jane',
+    'lastName': 'Smith',
+    'mobile': '0777654321',
+    'phone': '0118765432',
+    'email': 'jane.smith@example.com',
+    'companyName': 'Tech Solutions Ltd',
+    'street1': '456 Oak Avenue',
+    'street2': 'Suite 200',
+    'townCity': 'Kandy',
+    'province': 'Central Province',
+    'country': 'LK',
+    'postcode': '20000',
+  };
+
+  void _autofillSampleData() {
+    setState(() {
+      _firstNameController.text = _sampleData['firstName']!;
+      _lastNameController.text = _sampleData['lastName']!;
+      _mobileController.text = _sampleData['mobile']!;
+      _phoneController.text = _sampleData['phone']!;
+      _emailController.text = _sampleData['email']!;
+      _companyNameController.text = _sampleData['companyName']!;
+      _street1Controller.text = _sampleData['street1']!;
+      _street2Controller.text = _sampleData['street2']!;
+      _townCityController.text = _sampleData['townCity']!;
+      _provinceController.text = _sampleData['province']!;
+      _countryController.text = _sampleData['country']!;
+      _postcodeController.text = _sampleData['postcode']!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +73,21 @@ class _ShippingDetailsPageState extends State<ShippingDetailsPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _autofillSampleData,
+                      icon: const Icon(Icons.auto_fix_high),
+                      label: const Text('Autofill Sample Data'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade100,
+                        foregroundColor: Colors.green.shade900,
+                      ),
+                    ),
+                  ),
+                ),
                 _buildBillingAddressSection(),
                 SizedBox(
                   width: double.infinity,
