@@ -1,3 +1,8 @@
+## 2.1.1
+
+* added web support
+* updated dependencies
+
 ## 2.0.4
 
 * added support for recurring transactions
