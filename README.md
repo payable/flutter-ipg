@@ -4,7 +4,7 @@
 
 Flutter Package - [flutter-ipg.payable.lk](https://flutter-ipg.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
 
-[![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg)
+[![Pub](https://img.shields.io/pub/v/payable_ipg_flutter.svg)](https://pub.dev/packages/payable_ipg_flutter)
 
 <hr/>
 
@@ -54,7 +54,7 @@ PAYableIPGClient ipgClient = PAYableIPGClient(
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
-    amount: 100.45,
+    amount: "100.45",
     currencyCode: "LKR",
     paymentType: 1, // The value is 1 for one-time payments
     orderDescription: "Netflix",
@@ -74,7 +74,7 @@ PAYableIPG(
 ```dart
 PAYableIPG(
     ipgClient: ipgClient,
-    amount: 350.00, // Sets the amount needs to be charged along with this payment
+    amount: "350.00", // Sets the amount needs to be charged along with this payment
     currencyCode: "LKR",
     paymentType: 2, // The value is 2 for recurring payments
     orderDescription: "Play Pass",
@@ -237,33 +237,9 @@ var data = await ipgClient.getStatus("uid", "resultIndicator");
 
 <hr/>
 
-### Supported Platforms
-Currently this SDK is tested and supports on Android, iOS and Web. 
-
-- When generating an API token via the portal:
-    - Category should be selected as 'App', regardless of the platform.
-    - For web, 'Package Name' should be your domain, and should be the same as the value returned from `html.window.location.origin` (without https://).
-      
-- When the payment process is finished:
-    - On mobile platforms, `onPaymentCompleted` callback will be invoked.
-    - On web platform, the user will be redirected to the `returnUrl` provided when creating `PAYableIPGClient`.
-      
-- `returnUrl` parameter is required regardles of the platform. You may use a valid placeholder URL for mobile platforms.
-
-
-<hr/>
-
-### API Documentation
-
-This document contains all the HTTP APIs used in this package.
-
-[ipg-mobile-api.payable.lk](https://ipg-mobile-api.payable.lk)
-
-<hr/>
-
 ### Demo
 
-![](https://raw.githubusercontent.com/payable/flutter-ipg/sprint7/screen.gif)
+![](https://raw.githubusercontent.com/payable/flutter-ipg/master/screen.gif)
 
 > If you want to do more customization on this package, you can get the source code from this repository and use it for further development.
 
