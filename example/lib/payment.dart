@@ -75,7 +75,7 @@ class _PaymentPageState extends State<PaymentPage> {
           merchantKey: prefs.getString('merchantKey') ?? '',
           merchantToken: prefs.getString('merchantToken') ?? '',
           webhookUrl: prefs.getString('notificationUrl') ?? '',
-          environment: IPGEnvironment.qa);
+          environment: IPGEnvironment.live);
 
       _payableIPG = PAYableIPG(
           ipgClient: _myIpgClient!,

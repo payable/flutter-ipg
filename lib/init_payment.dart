@@ -187,7 +187,7 @@ class PAYableIPGState extends State<PAYableIPG> {
       // Hardcoded, developer is not allowed to set the values
       "isMobilePayment": 1,
       "integrationType": "Flutter SDK",
-      "integrationVersion": "2.1.0",
+      "integrationVersion": "2.1.1",
       "statusReturnUrl": "${getEndpoint(environment)}/status-view",
 
       // Generated internally, developer is not allowed to set the values
