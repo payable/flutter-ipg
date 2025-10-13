@@ -23,7 +23,7 @@ android {
 <b>2.</b> Add the below package into your `pubspec.yaml` file.
 
 ```yaml
-payable_ipg_flutter: ^2.0.4
+payable_ipg_flutter: ^2.1.1
 ```
 
 <hr/>
