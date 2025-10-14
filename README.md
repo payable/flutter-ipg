@@ -4,7 +4,7 @@
 
 Flutter Package - [flutter-ipg.payable.lk](https://flutter-ipg.payable.lk) | [Create Issue](https://github.com/payable/flutter-ipg/issues/new)
 
-[![Pub](https://img.shields.io/pub/v/payable_ipg.svg)](https://pub.dartlang.org/packages/payable_ipg_flutter)
+[![Pub](https://img.shields.io/pub/v/payable_ipg_flutter.svg)](https://pub.dartlang.org/packages/payable_ipg_flutter)
 
 <hr/>
 
